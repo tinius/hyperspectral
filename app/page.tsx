@@ -272,15 +272,7 @@ export default function Home() {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <div className="wordmark">TRACE / 01</div>
-        <div className="scene-title">
-          <span>Hyperspectral methane explorer</span>
-          <strong>Pakistan · 14 January 2025</strong>
-        </div>
-        <div className="method-tag">
-          <span className="status-dot" />
-          Independent methane target
-        </div>
+        <div className="scene-title">Hyperspectral methane explorer</div>
       </header>
 
       <section className="hero">
@@ -352,14 +344,10 @@ export default function Home() {
       </section>
 
       <section className="map-heading">
-        <div>
-          <span className="section-kicker">A TANAGER-1 SCENE OVER PAKISTAN</span>
-          <h2>Explore the plume</h2>
-        </div>
+        <h2>Explore an example plume</h2>
         <p>
-          Hover anywhere inside the satellite footprint. The chart compares
-          that region’s background-adjusted spectrum with methane’s expected
-          fingerprint.
+          Tanager-1 captured signs of methane over a gas processing plant in
+          Punjab, Pakistan.
         </p>
       </section>
 
