@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   Layer,
   NavigationControl,
@@ -100,7 +100,22 @@ function SpectralTooltip({
       const y = height / 2 - (value / extent) * (height * 0.42);
       return `${index ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`;
     }).join(" ");
-  const label = reading.score >= 3 ? "High" : reading.score >= 2 ? "Medium" : "Low";
+  const label =
+    reading.score >= 5
+      ? "Strong methane signal"
+      : reading.score >= 3
+        ? "Medium methane signal"
+        : reading.score >= 2
+          ? "Weak methane signal"
+          : "Insufficient methane signal";
+  const labelClass =
+    reading.score >= 5
+      ? "strong"
+      : reading.score >= 3
+        ? "medium"
+        : reading.score >= 2
+          ? "weak"
+          : "insufficient";
 
   return (
     <aside
@@ -113,10 +128,9 @@ function SpectralTooltip({
     >
       <div className="tooltip-heading">
         <div>
-          <span className={`signal-dot signal-${label.toLowerCase()}`} />
-          <strong>{label} methane-like signal</strong>
+          <span className={`signal-dot signal-${labelClass}`} />
+          <strong>{label}</strong>
         </div>
-        <span className="score-value">{reading.score.toFixed(1)}σ</span>
       </div>
       <svg
         className="spectral-chart"
@@ -145,6 +159,7 @@ export default function Home() {
   const [metadata, setMetadata] = useState<SceneMetadata | null>(null);
   const spectraRef = useRef<Int16Array | null>(null);
   const [reading, setReading] = useState<HoverReading | null>(null);
+  const lastRegionRef = useRef<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -159,10 +174,17 @@ export default function Home() {
     return () => { cancelled = true; };
   }, []);
 
-  const handleMove = (event: MapLayerMouseEvent) => {
+  const handleMove = useCallback((event: MapLayerMouseEvent) => {
     if (!metadata || !spectraRef.current) return;
+    // Do not update React state while MapLibre is handling a drag gesture.
+    // Frequent tooltip rerenders during pointer movement can interrupt panning
+    // and control-button gestures in embedded browsers.
+    if ("buttons" in event.originalEvent && event.originalEvent.buttons !== 0) {
+      return;
+    }
     const { u, v } = surfaceCoordinates(event.lngLat.lng, event.lngLat.lat, metadata);
     if (u < 0 || u > 1 || v < 0 || v > 1) {
+      lastRegionRef.current = null;
       setReading(null);
       return;
     }
@@ -174,6 +196,9 @@ export default function Home() {
       metadata.regionRows - 1,
       Math.floor((v * metadata.rasterHeight) / metadata.regionSize),
     );
+    const regionKey = `${regionRow}:${regionColumn}`;
+    if (lastRegionRef.current === regionKey) return;
+    lastRegionRef.current = regionKey;
     const score = metadata.scoreByRegion[regionRow][regionColumn];
     const start = (regionRow * metadata.regionColumns + regionColumn) * metadata.bands;
     const encoded = spectraRef.current.subarray(start, start + metadata.bands);
@@ -191,7 +216,12 @@ export default function Home() {
       score,
       curve: Array.from(encoded, (value) => value * metadata.curveQuantizationScale),
     });
-  };
+  }, [metadata]);
+
+  const clearReading = useCallback(() => {
+    lastRegionRef.current = null;
+    setReading(null);
+  }, []);
 
   if (!metadata) {
     return (
@@ -216,7 +246,66 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="map-stage" onMouseLeave={() => setReading(null)}>
+      <section className="hero">
+        <span className="section-kicker">SEEING THE INVISIBLE</span>
+        <div className="hero-grid">
+          <h1>Finding methane<br />between the colours.</h1>
+          <div className="hero-copy">
+            <p>
+              Ordinary cameras combine light into red, green and blue.
+              Hyperspectral satellites divide the spectrum into hundreds of
+              narrow bands—including wavelengths invisible to the human eye.
+            </p>
+            <p>
+              Molecules absorb light at distinctive wavelengths. By looking for
+              methane’s characteristic pattern, satellites can reveal harmful
+              gas plumes that would otherwise remain unseen.
+            </p>
+          </div>
+        </div>
+
+        <div className="spectrum-explainer">
+          <div className="spectrum-heading">
+            <strong>The electromagnetic spectrum captured by Tanager</strong>
+            <span>Wavelength in nanometres</span>
+          </div>
+          <div
+            className="spectrum-track"
+            aria-label="Wavelength chart from visible light to shortwave infrared"
+          >
+            <div className="visible-range"><span>Visible light</span></div>
+            <div className="near-infrared-range"><span>Near infrared</span></div>
+            <div className="shortwave-range"><span>Shortwave infrared</span></div>
+            <div className="methane-window"><span>Methane window</span></div>
+          </div>
+          <div className="spectrum-ticks">
+            <span style={{ left: "0%" }}>400</span>
+            <span style={{ left: "14.3%" }}>700</span>
+            <span style={{ left: "47.6%" }}>1,400</span>
+            <span style={{ left: "81%" }}>2,100</span>
+            <span style={{ left: "97.6%" }}>2,450</span>
+            <span style={{ left: "100%" }}>2,500</span>
+          </div>
+          <p className="spectrum-note">
+            The map below searches the 2,102–2,449 nm region, where methane
+            leaves a strong, structured absorption fingerprint.
+          </p>
+        </div>
+      </section>
+
+      <section className="map-heading">
+        <div>
+          <span className="section-kicker">A TANAGER-1 SCENE OVER PAKISTAN</span>
+          <h2>Explore the plume</h2>
+        </div>
+        <p>
+          Hover anywhere inside the satellite footprint. The chart compares
+          that region’s background-adjusted spectrum with methane’s expected
+          fingerprint.
+        </p>
+      </section>
+
+      <section className="map-stage" onMouseLeave={clearReading}>
         <Map
           initialViewState={{
             longitude: metadata.center[0],
@@ -224,10 +313,17 @@ export default function Home() {
             zoom: 10.6,
           }}
           mapStyle={BASE_STYLE}
+          style={{ width: "100%", height: "100%" }}
           onMouseMove={handleMove}
           cursor="crosshair"
           minZoom={8}
           maxZoom={15}
+          dragPan
+          dragRotate={false}
+          scrollZoom
+          doubleClickZoom
+          touchZoomRotate
+          keyboard
           attributionControl
         >
           <NavigationControl position="bottom-right" showCompass={false} />
@@ -249,25 +345,22 @@ export default function Home() {
           </Source>
         </Map>
 
-        <div className="map-intro">
-          <span className="eyebrow">TANAGER-1 / ORTHO RADIANCE</span>
-          <h1>A methane plume,<br />revealed by its spectrum.</h1>
-          <p>
-            Move across the scene to compare each region with methane’s known
-            absorption fingerprint.
-          </p>
-        </div>
-
         <div className="signal-legend" aria-label="Methane-like signal legend">
           <div className="legend-title">
             <span>Methane-like signal</span>
-            <span>relative score</span>
+            <span>relative strength</span>
           </div>
-          <div className="gradient-bar" />
-          <div className="legend-labels">
-            <span>Low · 1.5σ</span>
-            <span>Medium · 3σ</span>
-            <span>High · 5σ+</span>
+          <div className="category-scale">
+            <span className="category-insufficient" />
+            <span className="category-weak" />
+            <span className="category-medium" />
+            <span className="category-strong" />
+          </div>
+          <div className="category-labels">
+            <span>Insufficient</span>
+            <span>Weak</span>
+            <span>Medium</span>
+            <span>Strong</span>
           </div>
         </div>
 
