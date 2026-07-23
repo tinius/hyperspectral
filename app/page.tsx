@@ -40,7 +40,7 @@ type HoverReading = {
 };
 
 const MAPTILER_KEY = import.meta.env.VITE_MAPTILER_KEY;
-const MAP_STYLE = `https://api.maptiler.com/maps/hybrid-v4/style.json?key=${MAPTILER_KEY}`;
+const MAP_STYLE = `https://api.maptiler.com/maps/base-v4/style.json?key=${MAPTILER_KEY}`;
 const BASEMAP_WASH = {
   type: "Feature" as const,
   properties: {},
@@ -340,9 +340,9 @@ export default function Home() {
       <section className="map-stage" onMouseLeave={clearReading}>
         <Map
           initialViewState={{
-            longitude: 69.808,
-            latitude: 27.99,
-            zoom: 11.5,
+            longitude: 69.795,
+            latitude: 28,
+            zoom: 11.3,
           }}
           mapStyle={MAP_STYLE}
           style={{ width: "100%", height: "100%" }}
@@ -360,12 +360,28 @@ export default function Home() {
         >
           <NavigationControl position="bottom-right" showCompass={false} />
           <Source id="basemap-wash" type="geojson" data={BASEMAP_WASH}>
-            <Layer
+            {/* <Layer
               id="basemap-wash-layer"
               type="fill"
               paint={{
                 "fill-color": "#f3f0ea",
-                "fill-opacity": 0.28,
+                "fill-opacity": 1,
+              }}
+            /> */}
+          </Source>
+          <Source
+            id="tanager-visual"
+            type="image"
+            url="/data/tanager-visual.png"
+            coordinates={metadata.corners}
+          >
+            <Layer
+              id="tanager-visual-layer"
+              type="raster"
+              paint={{
+                "raster-opacity": 0.5,
+                "raster-resampling": "linear",
+                "raster-fade-duration": 0,
               }}
             />
           </Source>
@@ -396,9 +412,9 @@ export default function Home() {
                 }}
                 paint={{
                   "line-color": "#111111",
-                  "line-width": 2,
+                  "line-width": 1.5,
                   "line-opacity": 0.9,
-                  "line-dasharray": [1.2, 1.8],
+                  "line-dasharray": [1, 3],
                 }}
               />
             </Source>
