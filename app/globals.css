@@ -5,6 +5,7 @@
   --paper: #f3f0ea;
   --panel: rgba(249, 247, 242, .95);
   --line: rgba(49, 40, 32, .18);
+  --subtle: #7b6e63;
   --rust: #9d5e35;
 }
 
@@ -36,20 +37,24 @@ body {
 .topbar {
   display: flex;
   align-items: center;
+  justify-content: center;
   height: 68px;
   padding: 0 28px;
   border-bottom: 1px solid var(--line);
   background: var(--paper);
 }
-.scene-title { font-size: 12px; font-weight: 600; }
+.scene-title { font-size: 12px; font-weight: 600; color: var(--subtle); }
 
-.hero, .method-bridge, .map-heading, .map-stage, .footnote {
+.hero, .method-bridge, .map-stage, .footnote {
   width: 90vw;
   max-width: 1440px;
   margin-left: auto;
   margin-right: auto;
 }
-.hero { padding: 88px 0 78px; }
+.hero {
+  padding: 88px 0 78px;
+  text-align: center;
+}
 .section-kicker {
   display: block;
   color: #7b6e63;
@@ -58,13 +63,14 @@ body {
   letter-spacing: .16em;
 }
 .hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(340px, .85fr);
-  gap: clamp(48px, 9vw, 150px);
-  align-items: end;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 34px;
   margin-top: 20px;
 }
 .hero h1 {
+  max-width: 960px;
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(52px, 6.7vw, 102px);
@@ -73,10 +79,12 @@ body {
   letter-spacing: -.055em;
 }
 .hero-copy {
-  padding-bottom: 5px;
+  width: 100%;
+  max-width: 600px;
   color: #5f554d;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.62;
+  text-align: left;
 }
 .hero-copy p { margin: 0; }
 .hero-copy p + p { margin-top: 15px; }
@@ -88,12 +96,17 @@ body {
 }
 .spectrum-heading {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
   margin-bottom: 28px;
   font-size: 11px;
 }
-.spectrum-heading strong { font-weight: 600; }
+.spectrum-heading strong {
+  font-weight: 600;
+  font-size: 14px;
+
+}
 .spectrum-heading span { color: #84786e; }
 .spectrum-track {
   position: relative;
@@ -155,26 +168,28 @@ body {
 .spectrum-ticks span:first-child { transform: none; }
 .spectrum-ticks span:last-child { transform: translateX(-100%); }
 .spectrum-note {
-  max-width: 610px;
-  margin: 2px 0 0 auto;
+  width: 100%;
+  max-width: 600px;
+  margin: 2px auto 0;
   color: #70655c;
   font-size: 11px;
   line-height: 1.5;
+  text-align: left;
 }
 
 .method-bridge {
-  display: grid;
-  grid-template-columns: minmax(180px, .36fr) minmax(0, 1fr);
-  gap: clamp(40px, 8vw, 130px);
   padding: 55px 0 82px;
   border-top: 1px solid var(--line);
+  text-align: center;
 }
 .method-bridge-grid {
-  display: grid;
-  grid-template-columns: minmax(280px, .85fr) minmax(360px, 1.15fr);
-  gap: clamp(42px, 7vw, 110px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
 }
 .method-bridge h2 {
+  max-width: 820px;
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(34px, 3.6vw, 55px);
@@ -185,32 +200,22 @@ body {
 .method-bridge p {
   margin: 0;
   color: #5f554d;
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.62;
+}
+.method-bridge-grid > div {
+  width: 100%;
+  max-width: 600px;
+  text-align: left;
 }
 .method-bridge p + p { margin-top: 16px; }
 
-.map-heading {
-  margin-bottom: 24px;
-}
-.map-heading h2 {
-  margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(36px, 4vw, 58px);
-  font-weight: 400;
-  letter-spacing: -.035em;
-}
-.map-heading p {
-  margin: 8px 0 0;
-  color: #655b53;
-  font-size: 13px;
-  line-height: 1.55;
-}
-
 .map-stage {
   position: relative;
-  height: min(76vh, 780px);
-  min-height: 580px;
+  width: 80vw;
+  max-width: 1360px;
+  height: min(85vh, 820px);
+  min-height: 610px;
   overflow: hidden;
   background: #e4e1da;
   border: 1px solid var(--line);
@@ -267,11 +272,11 @@ body {
   height: 8px;
   background: linear-gradient(
     90deg,
-    rgba(230,205,165,.14),
-    rgba(205,159,111,.38) 28%,
-    rgba(168,105,62,.62) 52%,
-    rgba(105,57,34,.83) 76%,
-    #371c12
+    rgba(232,210,188,.14),
+    rgba(196,126,98,.4) 28%,
+    rgba(143,62,46,.68) 52%,
+    rgba(77,31,26,.86) 76%,
+    #19100f
   );
 }
 .scale-marker {
@@ -281,20 +286,18 @@ body {
   height: 14px;
   background: rgba(36,30,25,.62);
 }
-.marker-insufficient { left: 3%; }
-.marker-weak { left: 29%; }
-.marker-medium { left: 59%; }
-.marker-strong { right: 2%; }
+.marker-none { left: 0; }
+.marker-medium { left: 50%; }
+.marker-strong { right: 0; }
 .category-labels {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
   margin-top: 7px;
   color: #756a61;
   font-size: 8px;
 }
-.category-labels span:nth-child(2),
-.category-labels span:nth-child(3) { text-align: center; }
+.category-labels span:nth-child(2) { text-align: center; }
 .category-labels span:last-child { text-align: right; }
 
 .hover-hint {
@@ -333,15 +336,14 @@ body {
 }
 .tooltip-heading > div { display: flex; align-items: center; gap: 7px; }
 .signal-dot { width: 8px; height: 8px; border-radius: 50%; }
-.signal-insufficient { background: #d7c4aa; }
-.signal-weak { background: #c09367; }
-.signal-medium { background: #8e5638; }
-.signal-strong { background: #4a281b; }
+.signal-none { background: #d7c4aa; }
+.signal-medium { background: #8f3e2e; }
+.signal-strong { background: #19100f; }
 .spectral-chart { display: block; width: 100%; height: 108px; overflow: visible; }
 .zero-line { stroke: rgba(60,48,38,.16); stroke-width: 1; }
 .target-line, .observed-line { fill: none; vector-effect: non-scaling-stroke; }
-.target-line { stroke: #ad7e55; stroke-width: 1.8; stroke-dasharray: 4 3; }
-.observed-line { stroke: #3d271d; stroke-width: 2; }
+.target-line { stroke: #a65f4d; stroke-width: 1.8; stroke-dasharray: 4 3; }
+.observed-line { stroke: #211512; stroke-width: 2; }
 .axis-labels {
   display: flex;
   justify-content: space-between;
@@ -358,8 +360,8 @@ body {
 }
 .chart-legend span { display: flex; align-items: center; gap: 5px; }
 .legend-line { display: inline-block; width: 17px; height: 0; border-top: 2px solid; }
-.legend-line.observed { border-color: #3d271d; }
-.legend-line.target { border-color: #ad7e55; border-top-style: dashed; }
+.legend-line.observed { border-color: #211512; }
+.legend-line.target { border-color: #a65f4d; border-top-style: dashed; }
 .spectral-tooltip p {
   margin: 9px 0 0;
   padding-top: 8px;
@@ -371,26 +373,38 @@ body {
 
 .footnote {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+  justify-content: center;
+  gap: 7px;
   min-height: 58px;
-  border-top: 1px solid var(--line);
   color: #675d54;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.35;
+  margin-bottom: 30vh;
+  margin-top: 15px;
 }
-.footnote p { max-width: 760px; margin: 0; }
+.footnote p {
+  width: 100%;
+  max-width: 600px;
+  margin: 0;
+  text-align: left;
+}
+.footnote a {
+  color: inherit;
+  text-decoration-color: rgba(103,93,84,.45);
+  text-underline-offset: 2px;
+}
 .footnote span { white-space: nowrap; font-family: var(--font-geist-mono), monospace; }
 
 @media (max-width: 760px) {
   .app-shell { padding-bottom: 20px; }
   .topbar { height: 58px; padding: 0 16px; }
-  .hero, .method-bridge, .map-heading, .map-stage, .footnote { width: calc(100vw - 28px); }
+  .hero, .method-bridge, .map-stage, .footnote { width: calc(100vw - 28px); }
   .hero { padding: 54px 0 52px; }
   .hero-grid { grid-template-columns: 1fr; gap: 28px; }
   .hero h1 { font-size: 52px; }
-  .hero-copy { font-size: 14px; }
+  .hero-copy { font-size: 17px; }
   .spectrum-explainer { margin-top: 48px; }
   .spectrum-heading span { display: none; }
   .spectrum-track { height: 64px; }
@@ -398,17 +412,12 @@ body {
   .methane-window span { font-size: 8px; }
   .spectrum-note { margin-top: 5px; }
   .method-bridge {
-    grid-template-columns: 1fr;
-    gap: 20px;
     padding: 42px 0 56px;
   }
   .method-bridge-grid {
-    grid-template-columns: 1fr;
-    gap: 25px;
+    gap: 22px;
   }
   .method-bridge h2 { font-size: 38px; }
-  .map-heading { margin-bottom: 17px; }
-  .map-heading p { font-size: 12px; }
   .map-stage { min-height: 640px; height: 76vh; }
   .hover-hint { display: none; }
   .signal-legend { left: 14px; bottom: 14px; width: 290px; }

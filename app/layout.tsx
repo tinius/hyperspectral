@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TRACE — Hyperspectral Methane Explorer",
+  title: "Hyperspectral Methane Explorer",
   description:
     "Explore how a hyperspectral satellite reveals methane through its absorption fingerprint.",
   icons: {

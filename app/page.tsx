@@ -107,33 +107,28 @@ function SpectralTooltip({
     );
     return reading.curve.map((value) => value / Math.max(rms, 1e-8));
   }, [reading.curve]);
-  const extent = Math.max(
-    1.8,
-    ...normalizedCurve.map((value) => Math.abs(value)),
-    ...metadata.target.map((value) => Math.abs(value)),
-  );
+  // Keep a fixed, symmetric y-domain so the methane target never changes
+  // shape or apparent amplitude as the user moves between regions.
+  const extent = 4;
   const makePath = (values: number[]) =>
     values.map((value, index) => {
       const x = (index / Math.max(1, values.length - 1)) * width;
-      const y = height / 2 - (value / extent) * (height * 0.42);
+      const unclippedY = height / 2 - (value / extent) * (height * 0.42);
+      const y = Math.max(0, Math.min(height, unclippedY));
       return `${index ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`;
     }).join(" ");
   const label =
     reading.score >= 5
       ? "Strong methane signal"
-      : reading.score >= 3
+      : reading.score >= 2
         ? "Medium methane signal"
-        : reading.score >= 2
-          ? "Weak methane signal"
-          : "Insufficient methane signal";
+        : "No methane signal";
   const labelClass =
     reading.score >= 5
       ? "strong"
-      : reading.score >= 3
+      : reading.score >= 2
         ? "medium"
-        : reading.score >= 2
-          ? "weak"
-          : "insufficient";
+        : "none";
 
   return (
     <aside
@@ -166,7 +161,7 @@ function SpectralTooltip({
       </div>
       <div className="chart-legend">
         <span><i className="legend-line observed" />Observed here</span>
-        <span><i className="legend-line target" />Methane target</span>
+        <span><i className="legend-line target" />Methane signature</span>
       </div>
       <p>Shape-normalized after subtracting spectrally similar surfaces.</p>
     </aside>
@@ -272,30 +267,30 @@ export default function Home() {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <div className="scene-title">Hyperspectral methane explorer</div>
+        <div className="scene-title">Working with hyperspectral satellite data, a tech demo by Niko Kommenda</div>
       </header>
 
       <section className="hero">
-        <span className="section-kicker">SEEING THE INVISIBLE</span>
+        {/* <span className="section-kicker">SEEING THE INVISIBLE</span> */}
         <div className="hero-grid">
-          <h1>Finding methane<br />between the colours.</h1>
+          <h1>Going <em>hyperspectral</em> to find methane leaks</h1>
           <div className="hero-copy">
             <p>
-              Ordinary cameras combine light into red, green and blue.
-              Hyperspectral satellites divide the spectrum into hundreds of
-              narrow bands—including wavelengths invisible to the human eye.
+              Most satellites looking at Earth capture only a few broad bands of light -- think red, green and blue.
+              But satellites with hyperspectral sensors, like Planet's Tanager-1, divide the spectrum into hundreds of narrow bands,
+              unlocking new kinds of analysis. 
             </p>
             <p>
-              Molecules absorb light at distinctive wavelengths. By looking for
-              methane’s characteristic pattern, satellites can reveal harmful
-              gas plumes that would otherwise remain unseen.
+              One application is the detection of methane, a potent greenhouse gas that's invisible to the naked eye.
+              The gas absorbs light at a series of very specific wavelengths,
+              leaving a spectral "fingerprint" that shows up in the data captured by Tanager-1.
             </p>
           </div>
         </div>
 
         <div className="spectrum-explainer">
           <div className="spectrum-heading">
-            <strong>The electromagnetic spectrum captured by Tanager</strong>
+            <strong>The electromagnetic spectrum captured by Tanager-1</strong>
             <span>Wavelength in nanometres</span>
           </div>
           <div
@@ -313,50 +308,41 @@ export default function Home() {
             <span style={{ left: "47.6%" }}>1,400</span>
             <span style={{ left: "81%" }}>2,100</span>
             <span style={{ left: "97.6%" }}>2,450</span>
-            <span style={{ left: "100%" }}>2,500</span>
           </div>
           <p className="spectrum-note">
-            The map below searches the 2,102–2,449 nm region, where methane
+            The map below focuses on the 2,100–2,450 nm region, where methane
             leaves a strong, structured absorption fingerprint.
           </p>
         </div>
       </section>
 
       <section className="method-bridge">
-        <span className="section-kicker">FROM MEASUREMENT TO DETECTION</span>
         <div className="method-bridge-grid">
-          <h2>A simpler view of a sophisticated process.</h2>
+          <h2>Matching methane’s spectral signature</h2>
           <div>
             <p>
-              Planet’s Tanager-1 has the spectral resolution to uncover
-              methane’s subtle fingerprint. Planet combines sophisticated
-              detection algorithms with wind information to trace a plume
-              towards its likely source.
+            Planet and other groups use sophisticated algorithms to estimate methane concentrations and emission rates
+            from hyperspectral imagery. This demo takes a simpler approach to illustrate the underlying idea.
             </p>
             <p>
-              This demonstration focuses on the underlying principle. It
-              removes the expected spectral background, then highlights the
-              places where the satellite image most closely resembles
-              methane’s known absorption fingerprint.
+              After subtracting background noise,
+              the algorithm looks at how closely a pixel resembles methane's
+              absorption fingerprint inside a key window of wavelengths.
+            </p>
+            <p>
+              The map below demonstrates the algorithm on an example scene, revealing a large methane plume over a
+              gas processing plant in Punjab, Pakistan.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="map-heading">
-        <h2>Explore an example plume</h2>
-        <p>
-          Tanager-1 captured signs of methane over a gas processing plant in
-          Punjab, Pakistan.
-        </p>
-      </section>
-
       <section className="map-stage" onMouseLeave={clearReading}>
         <Map
           initialViewState={{
-            longitude: footprintCenter[0],
-            latitude: footprintCenter[1],
-            zoom: 10.6,
+            longitude: 69.808,
+            latitude: 27.99,
+            zoom: 11.5,
           }}
           mapStyle={MAP_STYLE}
           style={{ width: "100%", height: "100%" }}
@@ -366,7 +352,7 @@ export default function Home() {
           maxZoom={12.2}
           dragPan
           dragRotate={false}
-          scrollZoom
+          scrollZoom={false}
           doubleClickZoom
           touchZoomRotate
           keyboard
@@ -409,30 +395,28 @@ export default function Home() {
                   "line-join": "round",
                 }}
                 paint={{
-                  "line-color": "#4f392d",
-                  "line-width": 1.25,
-                  "line-opacity": 0.62,
-                  "line-dasharray": [2, 2.5],
+                  "line-color": "#111111",
+                  "line-width": 2,
+                  "line-opacity": 0.9,
+                  "line-dasharray": [1.2, 1.8],
                 }}
               />
             </Source>
           )}
         </Map>
 
-        <div className="signal-legend" aria-label="Methane-like signal legend">
+        <div className="signal-legend" aria-label="Methane signal legend">
           <div className="legend-title">
-            <span>Methane-like signal</span>
+            <span>Methane signal</span>
             <span>relative strength</span>
           </div>
           <div className="continuous-scale">
-            <i className="scale-marker marker-insufficient" />
-            <i className="scale-marker marker-weak" />
+            <i className="scale-marker marker-none" />
             <i className="scale-marker marker-medium" />
             <i className="scale-marker marker-strong" />
           </div>
           <div className="category-labels">
-            <span>Insufficient</span>
-            <span>Weak</span>
+            <span>None</span>
             <span>Medium</span>
             <span>Strong</span>
           </div>
@@ -441,7 +425,7 @@ export default function Home() {
         {!reading && (
           <div className="hover-hint">
             <span className="crosshair-icon">＋</span>
-            Hover the plume to inspect its spectral signature
+            Hover inside the scene to inspect the spectral signature
           </div>
         )}
         {reading && <SpectralTooltip reading={reading} metadata={metadata} />}
@@ -450,9 +434,17 @@ export default function Home() {
       <footer className="footnote">
         <p>
           The score measures resemblance to methane after removing the expected
-          spectrum of similar surfaces. It indicates spectral evidence—not methane concentration.
+          spectrum of similar surfaces. It indicates spectral evidence, not
+          methane concentration. The reference signature is adapted from the
+          modeled methane absorption coefficient published in NASA’s{" "}
+          <a
+            href="https://nasa.github.io/LPDAAC-Data-Resources/external/Generating_Methane_Spectral_Fingerprint.html"
+            target="_blank"
+            rel="noreferrer"
+          >
+            EMIT methane tutorial
+          </a>. The interactive tooltip in the map shows spectral information averaged over 5x5 pixels.
         </p>
-        <span>2102–2449 nm · 5 × 5 pixel regions</span>
       </footer>
     </main>
   );
