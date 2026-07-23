@@ -7,13 +7,16 @@ import Map, {
   Source,
   type MapLayerMouseEvent,
 } from "react-map-gl/maplibre";
-import type { StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 type SceneMetadata = {
   scene: string;
   corners: [[number, number], [number, number], [number, number], [number, number]];
   center: [number, number];
+  footprint: {
+    type: "Polygon";
+    coordinates: number[][][];
+  };
   rasterWidth: number;
   rasterHeight: number;
   regionSize: number;
@@ -36,30 +39,21 @@ type HoverReading = {
   curve: number[];
 };
 
-const BASE_STYLE: StyleSpecification = {
-  version: 8,
-  sources: {
-    positron: {
-      type: "raster",
-      tiles: [
-        "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-        "https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-      ],
-      tileSize: 256,
-      attribution: "© OpenStreetMap contributors © CARTO",
-    },
+const MAPTILER_KEY = import.meta.env.VITE_MAPTILER_KEY;
+const MAP_STYLE = `https://api.maptiler.com/maps/hybrid-v4/style.json?key=${MAPTILER_KEY}`;
+const BASEMAP_WASH = {
+  type: "Feature" as const,
+  properties: {},
+  geometry: {
+    type: "Polygon" as const,
+    coordinates: [[
+      [-180, -85],
+      [180, -85],
+      [180, 85],
+      [-180, 85],
+      [-180, -85],
+    ]],
   },
-  layers: [{
-    id: "neutral-basemap",
-    type: "raster",
-    source: "positron",
-    paint: {
-      "raster-saturation": -1,
-      "raster-contrast": -0.08,
-      "raster-brightness-min": 0.12,
-      "raster-brightness-max": 0.96,
-    },
-  }],
 };
 
 function surfaceCoordinates(longitude: number, latitude: number, metadata: SceneMetadata) {
@@ -71,6 +65,30 @@ function surfaceCoordinates(longitude: number, latitude: number, metadata: Scene
     v: (Math.max(...latitudes) - latitude) /
       (Math.max(...latitudes) - Math.min(...latitudes)),
   };
+}
+
+function polygonCentroid(ring: number[][]): [number, number] {
+  let crossSum = 0;
+  let longitudeSum = 0;
+  let latitudeSum = 0;
+  for (let index = 0; index < ring.length - 1; index += 1) {
+    const [longitude, latitude] = ring[index];
+    const [nextLongitude, nextLatitude] = ring[index + 1];
+    const cross = longitude * nextLatitude - nextLongitude * latitude;
+    crossSum += cross;
+    longitudeSum += (longitude + nextLongitude) * cross;
+    latitudeSum += (latitude + nextLatitude) * cross;
+  }
+  if (Math.abs(crossSum) < 1e-12) {
+    return [
+      ring.reduce((sum, point) => sum + point[0], 0) / ring.length,
+      ring.reduce((sum, point) => sum + point[1], 0) / ring.length,
+    ];
+  }
+  return [
+    longitudeSum / (3 * crossSum),
+    latitudeSum / (3 * crossSum),
+  ];
 }
 
 function SpectralTooltip({
@@ -223,6 +241,25 @@ export default function Home() {
     setReading(null);
   }, []);
 
+  const footprint = useMemo(() => {
+    if (!metadata) return null;
+    return {
+      type: "Feature" as const,
+      properties: {},
+      geometry: {
+        type: "Polygon" as const,
+        coordinates: [metadata.footprint.coordinates[0]],
+      },
+    };
+  }, [metadata]);
+
+  const footprintCenter = useMemo(
+    () => metadata
+      ? polygonCentroid(metadata.footprint.coordinates[0])
+      : [0, 0] as [number, number],
+    [metadata],
+  );
+
   if (!metadata) {
     return (
       <main className="loading-view">
@@ -293,6 +330,27 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="method-bridge">
+        <span className="section-kicker">FROM MEASUREMENT TO DETECTION</span>
+        <div className="method-bridge-grid">
+          <h2>A simpler view of a sophisticated process.</h2>
+          <div>
+            <p>
+              Planet’s Tanager-1 has the spectral resolution to uncover
+              methane’s subtle fingerprint. Planet combines sophisticated
+              detection algorithms with wind information to trace a plume
+              towards its likely source.
+            </p>
+            <p>
+              This demonstration focuses on the underlying principle. It
+              removes the expected spectral background, then highlights the
+              places where the satellite image most closely resembles
+              methane’s known absorption fingerprint.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="map-heading">
         <div>
           <span className="section-kicker">A TANAGER-1 SCENE OVER PAKISTAN</span>
@@ -308,16 +366,16 @@ export default function Home() {
       <section className="map-stage" onMouseLeave={clearReading}>
         <Map
           initialViewState={{
-            longitude: metadata.center[0],
-            latitude: metadata.center[1],
+            longitude: footprintCenter[0],
+            latitude: footprintCenter[1],
             zoom: 10.6,
           }}
-          mapStyle={BASE_STYLE}
+          mapStyle={MAP_STYLE}
           style={{ width: "100%", height: "100%" }}
           onMouseMove={handleMove}
           cursor="crosshair"
-          minZoom={8}
-          maxZoom={15}
+          minZoom={9.2}
+          maxZoom={12.2}
           dragPan
           dragRotate={false}
           scrollZoom
@@ -327,6 +385,16 @@ export default function Home() {
           attributionControl
         >
           <NavigationControl position="bottom-right" showCompass={false} />
+          <Source id="basemap-wash" type="geojson" data={BASEMAP_WASH}>
+            <Layer
+              id="basemap-wash-layer"
+              type="fill"
+              paint={{
+                "fill-color": "#f3f0ea",
+                "fill-opacity": 0.28,
+              }}
+            />
+          </Source>
           <Source
             id="methane-score"
             type="image"
@@ -343,6 +411,24 @@ export default function Home() {
               }}
             />
           </Source>
+          {footprint && (
+            <Source id="satellite-footprint" type="geojson" data={footprint}>
+              <Layer
+                id="satellite-footprint-line"
+                type="line"
+                layout={{
+                  "line-cap": "round",
+                  "line-join": "round",
+                }}
+                paint={{
+                  "line-color": "#4f392d",
+                  "line-width": 1.25,
+                  "line-opacity": 0.62,
+                  "line-dasharray": [2, 2.5],
+                }}
+              />
+            </Source>
+          )}
         </Map>
 
         <div className="signal-legend" aria-label="Methane-like signal legend">
@@ -350,11 +436,11 @@ export default function Home() {
             <span>Methane-like signal</span>
             <span>relative strength</span>
           </div>
-          <div className="category-scale">
-            <span className="category-insufficient" />
-            <span className="category-weak" />
-            <span className="category-medium" />
-            <span className="category-strong" />
+          <div className="continuous-scale">
+            <i className="scale-marker marker-insufficient" />
+            <i className="scale-marker marker-weak" />
+            <i className="scale-marker marker-medium" />
+            <i className="scale-marker marker-strong" />
           </div>
           <div className="category-labels">
             <span>Insufficient</span>

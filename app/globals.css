@@ -55,7 +55,7 @@ body {
   box-shadow: 0 0 0 3px rgba(95,122,89,.13);
 }
 
-.hero, .map-heading, .map-stage, .footnote {
+.hero, .method-bridge, .map-heading, .map-stage, .footnote {
   width: 90vw;
   max-width: 1440px;
   margin-left: auto;
@@ -174,6 +174,34 @@ body {
   line-height: 1.5;
 }
 
+.method-bridge {
+  display: grid;
+  grid-template-columns: minmax(180px, .36fr) minmax(0, 1fr);
+  gap: clamp(40px, 8vw, 130px);
+  padding: 55px 0 82px;
+  border-top: 1px solid var(--line);
+}
+.method-bridge-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, .85fr) minmax(360px, 1.15fr);
+  gap: clamp(42px, 7vw, 110px);
+}
+.method-bridge h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(34px, 3.6vw, 55px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -.035em;
+}
+.method-bridge p {
+  margin: 0;
+  color: #5f554d;
+  font-size: 14px;
+  line-height: 1.62;
+}
+.method-bridge p + p { margin-top: 16px; }
+
 .map-heading {
   display: grid;
   grid-template-columns: 1fr minmax(320px, 520px);
@@ -250,17 +278,29 @@ body {
   text-transform: none;
   letter-spacing: 0;
 }
-.category-scale {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2px;
+.continuous-scale {
+  position: relative;
   height: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(230,205,165,.14),
+    rgba(205,159,111,.38) 28%,
+    rgba(168,105,62,.62) 52%,
+    rgba(105,57,34,.83) 76%,
+    #371c12
+  );
 }
-.category-scale span { display: block; }
-.category-insufficient { background: rgba(230,205,165,.18); }
-.category-weak { background: rgba(190,133,79,.48); }
-.category-medium { background: rgba(121,70,39,.76); }
-.category-strong { background: #371c12; }
+.scale-marker {
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 14px;
+  background: rgba(36,30,25,.62);
+}
+.marker-insufficient { left: 3%; }
+.marker-weak { left: 29%; }
+.marker-medium { left: 59%; }
+.marker-strong { right: 2%; }
 .category-labels {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -364,7 +404,7 @@ body {
   .topbar { grid-template-columns: 1fr auto; height: 58px; padding: 0 16px; }
   .scene-title span, .method-tag { display: none; }
   .scene-title { justify-self: end; }
-  .hero, .map-heading, .map-stage, .footnote { width: calc(100vw - 28px); }
+  .hero, .method-bridge, .map-heading, .map-stage, .footnote { width: calc(100vw - 28px); }
   .hero { padding: 54px 0 52px; }
   .hero-grid { grid-template-columns: 1fr; gap: 28px; }
   .hero h1 { font-size: 52px; }
@@ -375,6 +415,16 @@ body {
   .spectrum-track > div:not(.methane-window) { padding: 0 6px 8px; font-size: 8px; }
   .methane-window span { font-size: 8px; }
   .spectrum-note { margin-top: 5px; }
+  .method-bridge {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 42px 0 56px;
+  }
+  .method-bridge-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  .method-bridge h2 { font-size: 38px; }
   .map-heading { grid-template-columns: 1fr; gap: 12px; margin-bottom: 17px; }
   .map-heading p { font-size: 12px; }
   .map-stage { min-height: 640px; height: 76vh; }
