@@ -112,7 +112,7 @@ function SpectralTooltip({
   // Use one fixed percentage scale. Extreme observed or fitted curves clip
   // rather than changing the apparent scale while hovering.
   const yMinimum = -25;
-  const yMaximum = 20;
+  const yMaximum = 8;
   const makeY = (value: number) => {
     const unclippedY =
       ((yMaximum - value) / (yMaximum - yMinimum)) * height;
@@ -125,13 +125,13 @@ function SpectralTooltip({
       return `${index ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`;
     }).join(" ");
   const label =
-    reading.score >= 5
+    reading.score >= 7
       ? "Strong methane signal"
       : reading.score >= 2
         ? "Medium methane signal"
         : "No methane signal";
   const labelClass =
-    reading.score >= 5
+    reading.score >= 7
       ? "strong"
       : reading.score >= 2
         ? "medium"
@@ -174,11 +174,11 @@ function SpectralTooltip({
       </div>
       <div className="chart-legend">
         <span><i className="legend-line observed" />Observed here</span>
-        <span><i className="legend-line target" />NASA methane pattern</span>
+        <span><i className="legend-line target" />Methane absorption pattern</span>
       </div>
       <p>
-        Observed light relative to similar surfaces. NASA’s pattern uses one
-        fixed scale fitted from the scene’s strongest detections.
+        Observed light relative to similar surfaces. Methane pattern scaled to
+        match the scene’s strongest detections.
       </p>
     </aside>
   );
@@ -296,7 +296,7 @@ export default function Home() {
               green and red as well as some regions outside of what our eyes can see, like near-infrared.</p>
 
               <p>
-              Hyperspectral sensors, like the one aboard Planet’s Tanager-1, divide that same spectrum into hundreds of narrow bands,
+              Hyperspectral sensors, like the one aboard Planet’s Tanager-1, measure the incoming light in hundreds of narrow bands,
               unlocking new kinds of analysis. 
             </p>
             <p>
@@ -360,8 +360,8 @@ export default function Home() {
         <Map
           initialViewState={{
             longitude: 69.795,
-            latitude: 28,
-            zoom: 11.3,
+            latitude: 27.995,
+            zoom: 11.4,
           }}
           mapStyle={MAP_STYLE}
           style={{ width: "100%", height: "100%" }}

@@ -273,9 +273,9 @@ body {
   background: linear-gradient(
     90deg,
     rgba(232,210,188,.14),
-    rgba(196,126,98,.4) 28%,
-    rgba(143,62,46,.68) 52%,
-    rgba(77,31,26,.86) 76%,
+    rgba(187,116,91,.42) 20%,
+    rgba(132,55,43,.7) 53%,
+    rgba(77,31,26,.86) 78%,
     #19100f
   );
 }
@@ -399,8 +399,9 @@ body {
 }
 .footnote a {
   color: inherit;
-  text-decoration-color: rgba(103,93,84,.45);
-  text-underline-offset: 2px;
+  text-decoration: underline;
+  text-decoration-color: rgba(103,93,84,.3);
+  text-underline-offset: 3px;
 }
 .footnote span { white-space: nowrap; font-family: var(--font-geist-mono), monospace; }
 
@@ -436,6 +437,5 @@ body {
     bottom: 90px;
     width: calc(100% - 28px);
   }
-  .footnote p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .footnote span { display: none; }
 }
