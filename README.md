@@ -6,7 +6,7 @@ directly on GitHub Pages.
 
 ## Local development
 
-Requires Node.js 20.19 or newer.
+Requires Node.js 22.13 or newer.
 
 ```bash
 npm install
