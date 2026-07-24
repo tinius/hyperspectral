@@ -25,6 +25,9 @@ type SceneMetadata = {
   bands: number;
   wavelengths: number[];
   target: number[];
+  rawTarget: number[];
+  targetBaseline: number[];
+  targetResidualRms: number;
   curveQuantizationScale: number;
   curveNoData: number;
   scoreByRegion: number[][];
@@ -107,14 +110,26 @@ function SpectralTooltip({
     );
     return reading.curve.map((value) => value / Math.max(rms, 1e-8));
   }, [reading.curve]);
-  // Keep a fixed, symmetric y-domain so the methane target never changes
-  // shape or apparent amplitude as the user moves between regions.
-  const extent = 4;
+  const reconstructedCurve = normalizedCurve.map(
+    (value, index) =>
+      metadata.targetBaseline[index] + value * metadata.targetResidualRms,
+  );
+  // Use a fixed domain derived only from NASA's raw target. Hovered curves may
+  // clip rather than changing the apparent scale of the methane signature.
+  const targetMinimum = Math.min(...metadata.rawTarget);
+  const targetMaximum = Math.max(...metadata.rawTarget);
+  const targetRange = Math.max(targetMaximum - targetMinimum, 1e-8);
+  const yMinimum = targetMinimum - targetRange * 0.12;
+  const yMaximum = Math.max(0, targetMaximum + targetRange * 0.3);
+  const makeY = (value: number) => {
+    const unclippedY =
+      ((yMaximum - value) / (yMaximum - yMinimum)) * height;
+    return Math.max(0, Math.min(height, unclippedY));
+  };
   const makePath = (values: number[]) =>
     values.map((value, index) => {
       const x = (index / Math.max(1, values.length - 1)) * width;
-      const unclippedY = height / 2 - (value / extent) * (height * 0.46);
-      const y = Math.max(0, Math.min(height, unclippedY));
+      const y = makeY(value);
       return `${index ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`;
     }).join(" ");
   const label =
@@ -151,15 +166,15 @@ function SpectralTooltip({
         role="img"
         aria-label="Observed background-adjusted spectrum compared with the methane target"
       >
-        <line x1="0" x2={width} y1={height / 2} y2={height / 2} className="zero-line" />
+        <line x1="0" x2={width} y1={makeY(0)} y2={makeY(0)} className="zero-line" />
         {/* <text x="0" y="20" className="y-direction-label">
           ↑ More absorption
         </text>
         <text x="0" y={height - 14} className="y-direction-label">
           ↓ Less absorption
         </text> */}
-        <path d={makePath(metadata.target)} className="target-line" />
-        <path d={makePath(normalizedCurve)} className="observed-line" />
+        <path d={makePath(metadata.rawTarget)} className="target-line" />
+        <path d={makePath(reconstructedCurve)} className="observed-line" />
       </svg>
       <div className="axis-labels">
         <span>{Math.round(metadata.retrievalWindowNm[0])} nm</span>
@@ -169,7 +184,10 @@ function SpectralTooltip({
         <span><i className="legend-line observed" />Observed here</span>
         <span><i className="legend-line target" />Methane absorption signature</span>
       </div>
-      <p>Shape-normalized after subtracting spectrally similar surfaces.</p>
+      <p>
+        The observed residual is shape-normalized and placed on the methane
+        signature’s smooth baseline for visual comparison.
+      </p>
     </aside>
   );
 }
