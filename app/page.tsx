@@ -148,7 +148,7 @@ function SpectralTooltip({
       <div className="tooltip-heading">
         <div>
           <span className={`signal-dot signal-${labelClass}`} />
-          <strong>{label}</strong>
+          <span style={{ fontWeight : reading.score >= 7 ? "bold" : "normal" }}>{label}</span>
         </div>
       </div>
       <svg
@@ -291,7 +291,7 @@ export default function Home() {
           <h1>Going <em>hyperspectral</em> to find methane leaks</h1>
           <div className="hero-copy">
             <p>
-              Most satellites looking at Earth capture only a few broad bands of light — familiar colours like blue,
+              Most satellites looking at Earth capture only a few broad bands of light: familiar colours like blue,
               green and red as well as some regions outside of what our eyes can see, like near-infrared.</p>
 
               <p>
@@ -308,7 +308,7 @@ export default function Home() {
 
         <div className="spectrum-explainer">
           <div className="spectrum-heading">
-            <strong>The electromagnetic spectrum captured by Tanager-1</strong>
+            <strong>The optical spectrum captured by Tanager-1</strong>
             <span>Wavelength in nanometres</span>
           </div>
           <div
@@ -368,12 +368,13 @@ export default function Home() {
           onClick={handleMove}
           cursor="crosshair"
           minZoom={9.2}
-          maxZoom={12.2}
+          maxZoom={12.8}
           dragPan
           dragRotate={false}
           scrollZoom={false}
           doubleClickZoom
           touchZoomRotate
+          cooperativeGestures
           keyboard
         >
           <NavigationControl position="bottom-right" showCompass={false} />
