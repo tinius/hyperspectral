@@ -113,7 +113,7 @@ function SpectralTooltip({
   const makePath = (values: number[]) =>
     values.map((value, index) => {
       const x = (index / Math.max(1, values.length - 1)) * width;
-      const unclippedY = height / 2 - (value / extent) * (height * 0.42);
+      const unclippedY = height / 2 - (value / extent) * (height * 0.46);
       const y = Math.max(0, Math.min(height, unclippedY));
       return `${index ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`;
     }).join(" ");
@@ -152,6 +152,12 @@ function SpectralTooltip({
         aria-label="Observed background-adjusted spectrum compared with the methane target"
       >
         <line x1="0" x2={width} y1={height / 2} y2={height / 2} className="zero-line" />
+        {/* <text x="0" y="20" className="y-direction-label">
+          ↑ More absorption
+        </text>
+        <text x="0" y={height - 14} className="y-direction-label">
+          ↓ Less absorption
+        </text> */}
         <path d={makePath(metadata.target)} className="target-line" />
         <path d={makePath(normalizedCurve)} className="observed-line" />
       </svg>
@@ -161,7 +167,7 @@ function SpectralTooltip({
       </div>
       <div className="chart-legend">
         <span><i className="legend-line observed" />Observed here</span>
-        <span><i className="legend-line target" />Methane signature</span>
+        <span><i className="legend-line target" />Methane absorption signature</span>
       </div>
       <p>Shape-normalized after subtracting spectrally similar surfaces.</p>
     </aside>
@@ -276,14 +282,17 @@ export default function Home() {
           <h1>Going <em>hyperspectral</em> to find methane leaks</h1>
           <div className="hero-copy">
             <p>
-              Most satellites looking at Earth capture only a few broad bands of light -- think red, green and blue.
-              But satellites with hyperspectral sensors, like Planet's Tanager-1, divide the spectrum into hundreds of narrow bands,
+              Most satellites looking at Earth capture only a few broad bands of light — familiar colours like blue,
+              green and red as well as some regions outside of what our eyes can see, like near-infrared.</p>
+
+              <p>
+              Hyperspectral sensors, like the one aboard Planet’s Tanager-1, divide that same spectrum into hundreds of narrow bands,
               unlocking new kinds of analysis. 
             </p>
             <p>
-              One application is the detection of methane, a potent greenhouse gas that's invisible to the naked eye.
-              The gas absorbs light at a series of very specific wavelengths,
-              leaving a spectral "fingerprint" that shows up in the data captured by Tanager-1.
+              One application is the detection of methane, a potent greenhouse gas invisible to the naked eye.
+              Methane absorbs light at a series of very specific wavelengths,
+              leaving a spectral “fingerprint” that can be recognised in the data captured by Tanager-1.
             </p>
           </div>
         </div>
@@ -321,12 +330,12 @@ export default function Home() {
           <h2>Matching methane’s spectral signature</h2>
           <div>
             <p>
-            Planet and other groups use sophisticated algorithms to estimate methane concentrations and emission rates
+            Planet, Carbon Mapper and other groups use sophisticated algorithms to estimate methane concentrations and emission rates
             from hyperspectral imagery. This demo takes a simpler approach to illustrate the underlying idea.
             </p>
             <p>
               After subtracting background noise,
-              the algorithm looks at how closely a pixel resembles methane's
+              the algorithm looks at how closely a pixel resembles methane’s
               absorption fingerprint inside a key window of wavelengths.
             </p>
             <p>
@@ -347,6 +356,7 @@ export default function Home() {
           mapStyle={MAP_STYLE}
           style={{ width: "100%", height: "100%" }}
           onMouseMove={handleMove}
+          onClick={handleMove}
           cursor="crosshair"
           minZoom={9.2}
           maxZoom={12.2}
@@ -441,7 +451,12 @@ export default function Home() {
         {!reading && (
           <div className="hover-hint">
             <span className="crosshair-icon">＋</span>
-            Hover inside the scene to inspect the spectral signature
+            <span className="desktop-hint">
+              Hover inside the scene to inspect the spectral signature
+            </span>
+            <span className="mobile-hint">
+              Tap inside the scene to inspect the spectral signature
+            </span>
           </div>
         )}
         {reading && <SpectralTooltip reading={reading} metadata={metadata} />}
