@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   Layer,
@@ -44,6 +42,7 @@ type HoverReading = {
 
 const MAPTILER_KEY = import.meta.env.VITE_MAPTILER_KEY;
 const MAP_STYLE = `https://api.maptiler.com/maps/base-v4/style.json?key=${MAPTILER_KEY}`;
+const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 const BASEMAP_WASH = {
   type: "Feature" as const,
   properties: {},
@@ -193,8 +192,8 @@ export default function Home() {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      fetch("/data/methane-scene.json").then((response) => response.json()),
-      fetch("/data/hover-spectra.i16").then((response) => response.arrayBuffer()),
+      fetch(assetUrl("data/methane-scene.json")).then((response) => response.json()),
+      fetch(assetUrl("data/hover-spectra.i16")).then((response) => response.arrayBuffer()),
     ]).then(([scene, buffer]: [SceneMetadata, ArrayBuffer]) => {
       if (cancelled) return;
       spectraRef.current = new Int16Array(buffer);
@@ -376,7 +375,6 @@ export default function Home() {
           doubleClickZoom
           touchZoomRotate
           keyboard
-          attributionControl
         >
           <NavigationControl position="bottom-right" showCompass={false} />
           <Source id="basemap-wash" type="geojson" data={BASEMAP_WASH}>
@@ -392,7 +390,7 @@ export default function Home() {
           <Source
             id="tanager-visual"
             type="image"
-            url="/data/tanager-visual.png"
+            url={assetUrl("data/tanager-visual.png")}
             coordinates={metadata.corners}
           >
             <Layer
@@ -408,7 +406,7 @@ export default function Home() {
           <Source
             id="methane-score"
             type="image"
-            url="/data/methane-score.png"
+            url={assetUrl("data/methane-score.png")}
             coordinates={metadata.corners}
           >
             <Layer
