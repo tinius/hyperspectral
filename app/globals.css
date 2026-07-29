@@ -254,9 +254,8 @@ body {
   display: flex;
   justify-content: space-between;
   margin-bottom: 9px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: .05em;
   text-transform: uppercase;
 }
 .legend-title span:last-child {
@@ -293,7 +292,7 @@ body {
   gap: 8px;
   margin-top: 7px;
   color: #756a61;
-  font-size: 8px;
+  font-size: 11px;
 }
 .category-labels span:nth-child(2) { text-align: center; }
 .category-labels span:last-child { text-align: right; }
@@ -361,7 +360,7 @@ body {
   gap: 16px;
   margin-top: 9px;
   color: #62574e;
-  font-size: 10px;
+  font-size: 11px;
 }
 .chart-legend span { display: flex; align-items: center; gap: 5px; }
 .legend-line { display: inline-block; width: 17px; height: 0; border-top: 2px solid; }
@@ -372,7 +371,7 @@ body {
   padding-top: 8px;
   border-top: 1px solid var(--line);
   color: #7a6e64;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.35;
 }
 
