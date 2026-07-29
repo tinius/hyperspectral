@@ -147,20 +147,20 @@ body {
 .methane-window span {
   position: absolute;
   left: 50%;
-  top: -24px;
+  top: -20px;
   transform: translateX(-50%);
   white-space: nowrap;
   color: #5a3021;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
 }
 .spectrum-ticks {
   position: relative;
   height: 27px;
-  margin-top: 7px;
+  margin-top: 4px;
   color: #857970;
   font-family: var(--font-geist-mono), monospace;
-  font-size: 9px;
+  font-size: 10px;
 }
 .spectrum-ticks span { position: absolute; transform: translateX(-50%); }
 .spectrum-ticks span:first-child { transform: none; }
@@ -411,10 +411,9 @@ body {
   .hero h1 { font-size: 52px; }
   .hero-copy { font-size: 17px; }
   .spectrum-explainer { margin-top: 48px; }
-  .spectrum-heading span { display: none; }
+
   .spectrum-track { height: 64px; }
   .spectrum-track > div:not(.methane-window) { padding: 0 6px 8px; font-size: 8px; }
-  .methane-window span { font-size: 8px; }
   .spectrum-note { margin-top: 5px; }
   .method-bridge {
     padding: 42px 0 56px;

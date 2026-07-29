@@ -324,8 +324,8 @@ export default function Home() {
             <span style={{ left: "0%" }}>400</span>
             <span style={{ left: "14.3%" }}>700</span>
             <span style={{ left: "47.6%" }}>1,400</span>
-            <span style={{ left: "81%" }}>2,100</span>
-            <span style={{ left: "97.6%" }}>2,450</span>
+            <span style={{ left: "81%", transform : 'translate(-50%,7px)', color : '#5a3021', fontWeight: 'bold' }}>2,100</span>
+            <span style={{ left: "97.6%", transform: 'translate(-50%, 7px)', color : '#5a3021', fontWeight: 'bold' }}>2,450</span>
           </div>
           <p className="spectrum-note">
             The map below focuses on the 2,100–2,450 nm region, where methane
