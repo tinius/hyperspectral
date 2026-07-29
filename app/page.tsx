@@ -358,16 +358,16 @@ export default function Home() {
       <section className="map-stage" onMouseLeave={clearReading}>
         <Map
           initialViewState={{
-            longitude: 69.795,
-            latitude: 27.995,
-            zoom: 11.4,
+            longitude: 69.8,
+            latitude: 27.993,
+            zoom: 11.6,
           }}
           mapStyle={MAP_STYLE}
           style={{ width: "100%", height: "100%" }}
           onMouseMove={handleMove}
           onClick={handleMove}
           cursor="crosshair"
-          minZoom={9.2}
+          minZoom={10.2}
           maxZoom={12.8}
           dragPan
           dragRotate={false}
