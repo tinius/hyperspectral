@@ -50,7 +50,7 @@ body {
   margin-right: auto;
 }
 .hero {
-  padding: 88px 0 78px;
+  padding: 88px 0 27px;
   text-align: center;
 }
 .section-kicker {
@@ -87,8 +87,12 @@ body {
 .hero-copy p { margin: 0; }
 .hero-copy p + p { margin-top: 15px; }
 
+.spectrum-explainer, .method-bridge, .map-stage {
+  width: 80vw;
+  max-width: 1360px;
+}
 .spectrum-explainer {
-  margin-top: 76px;
+  margin: 76px auto 0;
   padding-top: 24px;
   border-top: 1px solid var(--line);
 }
@@ -168,7 +172,7 @@ body {
 .spectrum-note {
   width: 100%;
   max-width: 600px;
-  margin: 2px auto 0;
+  margin: 15px auto 0;
   color: #70655c;
   font-size: 11px;
   line-height: 1.5;
@@ -210,8 +214,6 @@ body {
 
 .map-stage {
   position: relative;
-  width: 80vw;
-  max-width: 1360px;
   height: min(85vh, 820px);
   min-height: 610px;
   overflow: hidden;
@@ -405,16 +407,18 @@ body {
 @media (max-width: 760px) {
   .app-shell { padding-bottom: 20px; }
   .topbar { height: 58px; padding: 0 16px; }
-  .hero, .method-bridge, .map-stage, .footnote { width: calc(100vw - 28px); }
-  .hero { padding: 54px 0 52px; }
+  .hero, .spectrum-explainer, .method-bridge, .map-stage, .footnote {
+    width: calc(100vw - 28px);
+  }
+  .hero { padding: 54px 0 27px; }
   .hero-grid { grid-template-columns: 1fr; gap: 28px; }
-  .hero h1 { font-size: 52px; }
+  .hero h1 { font-size: 54px;, line-height: 1.1; }
   .hero-copy { font-size: 17px; }
   .spectrum-explainer { margin-top: 48px; }
 
   .spectrum-track { height: 64px; }
   .spectrum-track > div:not(.methane-window) { padding: 0 6px 8px; font-size: 8px; }
-  .spectrum-note { margin-top: 5px; }
+  .spectrum-note { margin-top: 20px; }
   .method-bridge {
     padding: 42px 0 56px;
   }
