@@ -315,6 +315,7 @@ body {
 }
 .crosshair-icon { color: var(--rust); font-size: 16px; }
 .mobile-hint { display: none; }
+.tap-marker { display: none; }
 
 .spectral-tooltip {
   position: absolute;
@@ -347,9 +348,9 @@ body {
   font-size: 10px;
   letter-spacing: .01em;
 }
-.target-line, .observed-line { fill: none; vector-effect: non-scaling-stroke; }
-.target-line { stroke: #a65f4d; stroke-width: 1.8; stroke-dasharray: 4 3; }
-.observed-line { stroke: #211512; stroke-width: 2; }
+.target-line, .observed-line { fill: none; }
+.target-line { stroke: #a65f4d; stroke-width: 1.75; stroke-dasharray: 4 3; }
+.observed-line { stroke: #211512; stroke-width: 1.75; }
 .axis-labels {
   display: flex;
   justify-content: space-between;
@@ -412,7 +413,7 @@ body {
   }
   .hero { padding: 54px 0 27px; }
   .hero-grid { grid-template-columns: 1fr; gap: 28px; }
-  .hero h1 { font-size: 54px;, line-height: 1.1; }
+  .hero h1 { font-size: 54px; line-height: 1.1; }
   .hero-copy { font-size: 17px; }
   .spectrum-explainer { margin-top: 48px; }
 
@@ -433,9 +434,25 @@ body {
   .signal-legend { left: 14px; bottom: 14px; width: 290px; }
   .spectral-tooltip {
     left: 14px !important;
+    width: calc(100% - 28px);
+  }
+  .spectral-tooltip.mobile-tooltip-top {
+    top: 14px !important;
+    bottom: auto;
+  }
+  .spectral-tooltip.mobile-tooltip-bottom {
     top: auto !important;
     bottom: 90px;
-    width: calc(100% - 28px);
+  }
+  .tap-marker {
+    display: block;
+    width: 9px;
+    height: 9px;
+    border: 2px solid rgba(249,247,242,.95);
+    border-radius: 50%;
+    background: #211512;
+    box-shadow: 0 1px 5px rgba(20,12,9,.45);
+    pointer-events: none;
   }
   .footnote span { display: none; }
 }

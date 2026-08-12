@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   Layer,
+  Marker,
   NavigationControl,
   Source,
   type MapLayerMouseEvent,
@@ -36,8 +37,14 @@ type SceneMetadata = {
 type HoverReading = {
   x: number;
   y: number;
+  mapHeight: number;
   score: number;
   curve: number[];
+};
+
+type TapLocation = {
+  longitude: number;
+  latitude: number;
 };
 
 const MAPTILER_KEY = import.meta.env.VITE_MAPTILER_KEY;
@@ -138,7 +145,11 @@ function SpectralTooltip({
 
   return (
     <aside
-      className="spectral-tooltip"
+      className={`spectral-tooltip ${
+        reading.y > reading.mapHeight / 2
+          ? "mobile-tooltip-top"
+          : "mobile-tooltip-bottom"
+      }`}
       style={{
         left: `min(calc(100% - 338px), ${reading.x + 18}px)`,
         top: `min(calc(100% - 250px), ${reading.y + 18}px)`,
@@ -187,7 +198,9 @@ export default function Home() {
   const [metadata, setMetadata] = useState<SceneMetadata | null>(null);
   const spectraRef = useRef<Int16Array | null>(null);
   const [reading, setReading] = useState<HoverReading | null>(null);
+  const [tapLocation, setTapLocation] = useState<TapLocation | null>(null);
   const lastRegionRef = useRef<string | null>(null);
+  const mapStageRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -202,7 +215,10 @@ export default function Home() {
     return () => { cancelled = true; };
   }, []);
 
-  const handleMove = useCallback((event: MapLayerMouseEvent) => {
+  const updateReading = useCallback((
+    event: MapLayerMouseEvent,
+    markTap: boolean,
+  ) => {
     if (!metadata || !spectraRef.current) return;
     // Do not update React state while MapLibre is handling a drag gesture.
     // Frequent tooltip rerenders during pointer movement can interrupt panning
@@ -214,6 +230,7 @@ export default function Home() {
     if (u < 0 || u > 1 || v < 0 || v > 1) {
       lastRegionRef.current = null;
       setReading(null);
+      if (markTap) setTapLocation(null);
       return;
     }
     const regionColumn = Math.min(
@@ -225,7 +242,7 @@ export default function Home() {
       Math.floor((v * metadata.rasterHeight) / metadata.regionSize),
     );
     const regionKey = `${regionRow}:${regionColumn}`;
-    if (lastRegionRef.current === regionKey) return;
+    if (!markTap && lastRegionRef.current === regionKey) return;
     lastRegionRef.current = regionKey;
     const score = metadata.scoreByRegion[regionRow][regionColumn];
     const start = (regionRow * metadata.regionColumns + regionColumn) * metadata.bands;
@@ -236,19 +253,50 @@ export default function Home() {
       encoded[0] === metadata.curveNoData
     ) {
       setReading(null);
+      if (markTap) setTapLocation(null);
       return;
     }
     setReading({
       x: event.point.x,
       y: event.point.y,
+      mapHeight: mapStageRef.current?.clientHeight ?? 0,
       score,
       curve: Array.from(encoded, (value) => value * metadata.curveQuantizationScale),
     });
+    if (markTap) {
+      setTapLocation({
+        longitude: event.lngLat.lng,
+        latitude: event.lngLat.lat,
+      });
+    }
   }, [metadata]);
+
+  const handleMove = useCallback(
+    (event: MapLayerMouseEvent) => updateReading(event, false),
+    [updateReading],
+  );
+
+  const handleTap = useCallback(
+    (event: MapLayerMouseEvent) => updateReading(event, true),
+    [updateReading],
+  );
 
   const clearReading = useCallback(() => {
     lastRegionRef.current = null;
     setReading(null);
+  }, []);
+
+  useEffect(() => {
+    const clearOutsideMap = (event: PointerEvent) => {
+      const target = event.target;
+      if (target instanceof Node && !mapStageRef.current?.contains(target)) {
+        lastRegionRef.current = null;
+        setReading(null);
+        setTapLocation(null);
+      }
+    };
+    document.addEventListener("pointerdown", clearOutsideMap);
+    return () => document.removeEventListener("pointerdown", clearOutsideMap);
   }, []);
 
   const footprint = useMemo(() => {
@@ -355,7 +403,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="map-stage" onMouseLeave={clearReading}>
+      <section ref={mapStageRef} className="map-stage" onMouseLeave={clearReading}>
         <Map
           initialViewState={{
             longitude: 69.8,
@@ -365,7 +413,7 @@ export default function Home() {
           mapStyle={MAP_STYLE}
           style={{ width: "100%", height: "100%" }}
           onMouseMove={handleMove}
-          onClick={handleMove}
+          onClick={handleTap}
           cursor="crosshair"
           minZoom={10.2}
           maxZoom={12.8}
@@ -437,6 +485,15 @@ export default function Home() {
                 }}
               />
             </Source>
+          )}
+          {tapLocation && (
+            <Marker
+              longitude={tapLocation.longitude}
+              latitude={tapLocation.latitude}
+              anchor="center"
+            >
+              <span className="tap-marker" aria-hidden="true" />
+            </Marker>
           )}
         </Map>
 
