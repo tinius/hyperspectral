@@ -412,6 +412,7 @@ export default function Home() {
           }}
           mapStyle={MAP_STYLE}
           style={{ width: "100%", height: "100%" }}
+          onLoad={(event) => event.target.touchZoomRotate.disableRotation()}
           onMouseMove={handleMove}
           onClick={handleTap}
           cursor="crosshair"
@@ -422,6 +423,7 @@ export default function Home() {
           scrollZoom={false}
           doubleClickZoom
           touchZoomRotate
+          touchPitch={false}
           cooperativeGestures
           keyboard
         >
