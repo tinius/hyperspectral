@@ -419,7 +419,7 @@ body {
   }
   .hero { padding: 54px 0 27px; }
   .hero-grid { grid-template-columns: 1fr; gap: 28px; }
-  .hero h1 { font-size: 54px; line-height: 1.1; }
+  .hero h1 { font-size: 52px; line-height: 1.05; }
   .hero-copy { font-size: 17px; }
   .spectrum-explainer { margin-top: 48px; }
 
