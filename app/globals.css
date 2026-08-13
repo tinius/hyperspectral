@@ -70,11 +70,11 @@ body {
 .hero h1 {
   max-width: 960px;
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(52px, 6.7vw, 102px);
+  font-family: "Gelasio", Georgia, "Times New Roman", serif;
+  font-size: 75px;
   font-weight: 400;
-  line-height: .93;
-  letter-spacing: -.055em;
+  line-height: .98;
+  letter-spacing: -.015em;
 }
 .hero-copy {
   width: 100%;
@@ -193,11 +193,11 @@ body {
 .method-bridge h2 {
   max-width: 820px;
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Gelasio", Georgia, "Times New Roman", serif;
   font-size: clamp(34px, 3.6vw, 55px);
   font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -.035em;
+  line-height: 1.07;
+  letter-spacing: -.02em;
 }
 .method-bridge p {
   margin: 0;
@@ -404,6 +404,12 @@ body {
   text-underline-offset: 3px;
 }
 .footnote span { white-space: nowrap; font-family: var(--font-geist-mono), monospace; }
+
+@media(max-width: 1024px) {
+  .hero h1 {
+    font-size: 60px;
+  }
+}
 
 @media (max-width: 760px) {
   .app-shell { padding-bottom: 20px; }
