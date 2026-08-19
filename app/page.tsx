@@ -7,6 +7,7 @@ import Map, {
   type MapLayerMouseEvent,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import OrbitGlobe from "./OrbitGlobe";
 
 type SceneMetadata = {
   scene: string;
@@ -45,6 +46,37 @@ type HoverReading = {
 type TapLocation = {
   longitude: number;
   latitude: number;
+};
+
+type BandFrame = {
+  file: string;
+  bandIndex: number;
+  wavelengthNm: number;
+  region: string;
+};
+
+type BandSequence = {
+  assetVersion: string;
+  width: number;
+  height: number;
+  normalization: string;
+  frames: BandFrame[];
+};
+
+type SourceHistoryData = {
+  center: [number, number];
+  widthKm: number;
+  heightKm: number;
+  basemap: string;
+  plumes: Array<{
+    id: string;
+    date: string;
+    emission: number;
+    uncertainty: number;
+    windSpeed: number;
+    windDirectionTo: number;
+    image: string;
+  }>;
 };
 
 const MAPTILER_KEY = import.meta.env.VITE_MAPTILER_KEY;
@@ -191,6 +223,196 @@ function SpectralTooltip({
         match the scene’s strongest detections.
       </p>
     </aside>
+  );
+}
+
+function BandScrubber() {
+  const [sequence, setSequence] = useState<BandSequence | null>(null);
+  const [frameIndex, setFrameIndex] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const imageCacheRef = useRef<globalThis.Map<number, HTMLImageElement>>(
+    new globalThis.Map(),
+  );
+  const activeFrameRef = useRef(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(assetUrl("data/bands/bands.json"))
+      .then((response) => response.json())
+      .then((data: BandSequence) => {
+        if (cancelled) return;
+        setSequence(data);
+        const nearInfrared = data.frames.findIndex(
+          (frame) => frame.wavelengthNm >= 850,
+        );
+        setFrameIndex(Math.max(0, nearInfrared));
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    activeFrameRef.current = frameIndex;
+    if (!sequence) return;
+
+    const loadFrame = (index: number, drawWhenReady: boolean) => {
+      if (index < 0 || index >= sequence.frames.length) return;
+      const draw = (image: HTMLImageElement) => {
+        if (!drawWhenReady || activeFrameRef.current !== index) return;
+        const context = canvasRef.current?.getContext("2d");
+        if (!context) return;
+        context.fillStyle = "#000";
+        context.fillRect(0, 0, sequence.width, sequence.height);
+        context.drawImage(image, 0, 0, sequence.width, sequence.height);
+      };
+      const cached = imageCacheRef.current.get(index);
+      if (cached?.complete) {
+        draw(cached);
+        return;
+      }
+      if (cached) {
+        cached.addEventListener("load", () => draw(cached), { once: true });
+        return;
+      }
+      const image = new Image();
+      image.decoding = "async";
+      image.onload = () => draw(image);
+      image.src = `${assetUrl(`data/bands/${sequence.frames[index].file}`)}?v=${sequence.assetVersion}`;
+      imageCacheRef.current.set(index, image);
+    };
+
+    loadFrame(frameIndex, true);
+    for (let offset = 1; offset <= 3; offset += 1) {
+      loadFrame(frameIndex - offset, false);
+      loadFrame(frameIndex + offset, false);
+    }
+  }, [frameIndex, sequence]);
+
+  const scrubFromPointer = useCallback((event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!sequence) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const position = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
+    setFrameIndex(Math.round(position * (sequence.frames.length - 1)));
+  }, [sequence]);
+
+  if (!sequence) {
+    return <div className="band-loading">Preparing the spectral bands…</div>;
+  }
+
+  const frame = sequence.frames[frameIndex];
+  return (
+    <div className="band-viewer">
+      <div className="band-canvas-wrap">
+        <canvas
+          ref={canvasRef}
+          className="band-canvas"
+          width={sequence.width}
+          height={sequence.height}
+          onPointerDown={(event) => {
+            event.currentTarget.setPointerCapture(event.pointerId);
+            scrubFromPointer(event);
+          }}
+          onPointerMove={(event) => {
+            if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+              scrubFromPointer(event);
+            }
+          }}
+          aria-label={`Tanager scene at ${Math.round(frame.wavelengthNm)} nanometres`}
+        />
+        <div className="band-readout">
+          <strong>{Math.round(frame.wavelengthNm).toLocaleString()} nm</strong>
+          <span>{frame.region}</span>
+        </div>
+        <span className="band-counter">Band {frame.bandIndex + 1} of 426</span>
+      </div>
+      <div className="band-controls">
+        <input
+          type="range"
+          min="0"
+          max={sequence.frames.length - 1}
+          value={frameIndex}
+          onChange={(event) => setFrameIndex(Number(event.target.value))}
+          aria-label="Wavelength"
+        />
+        <div className="band-scale" aria-hidden="true">
+          <span>400 nm</span>
+          <span>Visible</span>
+          <span>Near infrared</span>
+          <span>Shortwave infrared</span>
+          <span>2,450 nm</span>
+        </div>
+      </div>
+      <p className="band-normalization-note">
+        Each image is contrast-adjusted separately so that faint spatial detail
+        remains visible across the spectrum. Low-signal bands dominated by
+        atmospheric water absorption around 1,400 and 1,900 nm are omitted.
+      </p>
+    </div>
+  );
+}
+
+function SourceHistory() {
+  const [history, setHistory] = useState<SourceHistoryData | null>(null);
+
+  useEffect(() => {
+    fetch(assetUrl("data/source-history/history.json"))
+      .then((response) => response.json())
+      .then((data: SourceHistoryData) => setHistory(data));
+  }, []);
+
+  if (!history) return null;
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+
+  return (
+    <section className="source-history">
+      <div className="source-history-heading">
+        <h2>One source, seen again and again</h2>
+        <p>
+          Tanager repeatedly detected methane at this facility. A fixed view
+          makes it possible to compare how the plume changes with the wind and
+          the estimated emission rate.
+        </p>
+      </div>
+      <div className="source-history-grid">
+        {history.plumes.map((plume) => (
+          <article className="history-card" key={plume.id}>
+            <div className="history-map">
+              <img
+                className="history-basemap"
+                src={assetUrl(`data/source-history/${history.basemap}`)}
+                alt=""
+              />
+              <img
+                className="history-plume"
+                src={assetUrl(`data/source-history/${plume.image}`)}
+                alt={`Methane enhancement detected on ${plume.date}`}
+              />
+              <header className="history-card-heading">
+                <time dateTime={plume.date}>
+                  {formatter.format(new Date(`${plume.date}T00:00:00Z`))}
+                </time>
+              </header>
+              <div className="history-wind">
+                <svg
+                  className="history-wind-arrow"
+                  style={{ transform: `rotate(${plume.windDirectionTo}deg)` }}
+                  viewBox="0 0 18 30"
+                  aria-hidden="true"
+                >
+                  <path className="wind-pointer" d="M9 1 17 29 9 22 1 29Z" />
+                </svg>
+                <span>{plume.windSpeed.toFixed(1)} m/s</span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p className="source-history-attribution">Satellite basemap © MapTiler</p>
+    </section>
   );
 }
 
@@ -382,6 +604,28 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="orbit-section">
+        <div className="orbit-section-heading">
+          <h2>Following Tanager-1 around Earth</h2>
+          <p>
+            Tanager-1 travels at roughly 7.6 km per second, completing an orbit
+            about every 93 minutes. Scrub through a week to watch its ground
+            track accumulate behind it. Bright strips mark 250 real scenes made
+            available through Carbon Mapper&apos;s public methane catalogue during
+            the same week.
+          </p>
+        </div>
+        <OrbitGlobe />
+        <p className="orbit-method-note">
+          The line is a modelled orbital ground track propagated from a public
+          TLE for NORAD 60507. Highlighted polygons are actual Tanager full-scene
+          footprints from Carbon Mapper&apos;s public L2B methane collection for
+          12–19 July 2026; they are not a complete record of every Tanager capture.
+          Their outlines use a minimum display width so the real 18 km swaths
+          remain visible at globe scale. Land geometry uses Natural Earth 1:50m data.
+        </p>
+      </section>
+
       <section className="method-bridge">
         <div className="method-bridge-grid">
           <h2>Matching methane’s spectral signature</h2>
@@ -529,6 +773,8 @@ export default function Home() {
         )}
         {reading && <SpectralTooltip reading={reading} metadata={metadata} />}
       </section>
+
+      <SourceHistory />
 
       <footer className="footnote">
         <p>

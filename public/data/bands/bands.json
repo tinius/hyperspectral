@@ -1,0 +1,659 @@
+{
+  "scene": "20250114_062056_92_4001_ortho_radiance_hdf5",
+  "assetVersion": "atmospheric-windows-v1",
+  "width": 640,
+  "height": 775,
+  "normalization": "Per-band 1st\u201399th percentile radiance stretch",
+  "excludedAtmosphericWindowsNm": [
+    [
+      1350,
+      1480
+    ],
+    [
+      1780,
+      2000
+    ]
+  ],
+  "frames": [
+    {
+      "file": "band-00.webp",
+      "bandIndex": 5,
+      "wavelengthNm": 401.29,
+      "region": "Visible light",
+      "stretch": [
+        76.38086502075195,
+        90.37381782531737
+      ]
+    },
+    {
+      "file": "band-01.webp",
+      "bandIndex": 10,
+      "wavelengthNm": 426.16,
+      "region": "Visible light",
+      "stretch": [
+        66.65226486206055,
+        83.31911125183103
+      ]
+    },
+    {
+      "file": "band-02.webp",
+      "bandIndex": 16,
+      "wavelengthNm": 456.04,
+      "region": "Visible light",
+      "stretch": [
+        70.65478515625,
+        94.87801918029774
+      ]
+    },
+    {
+      "file": "band-03.webp",
+      "bandIndex": 21,
+      "wavelengthNm": 480.96,
+      "region": "Visible light",
+      "stretch": [
+        61.91202270507812,
+        88.90991508483881
+      ]
+    },
+    {
+      "file": "band-04.webp",
+      "bandIndex": 27,
+      "wavelengthNm": 510.89,
+      "region": "Visible light",
+      "stretch": [
+        52.195343017578125,
+        80.76891510009752
+      ]
+    },
+    {
+      "file": "band-05.webp",
+      "bandIndex": 32,
+      "wavelengthNm": 535.85,
+      "region": "Visible light",
+      "stretch": [
+        51.643428802490234,
+        79.54008308410644
+      ]
+    },
+    {
+      "file": "band-06.webp",
+      "bandIndex": 37,
+      "wavelengthNm": 560.83,
+      "region": "Visible light",
+      "stretch": [
+        46.176998138427734,
+        76.99188232421875
+      ]
+    },
+    {
+      "file": "band-07.webp",
+      "bandIndex": 43,
+      "wavelengthNm": 590.82,
+      "region": "Visible light",
+      "stretch": [
+        35.83749351501465,
+        71.59383399963373
+      ]
+    },
+    {
+      "file": "band-08.webp",
+      "bandIndex": 48,
+      "wavelengthNm": 615.83,
+      "region": "Visible light",
+      "stretch": [
+        32.18074035644531,
+        71.85596229553215
+      ]
+    },
+    {
+      "file": "band-09.webp",
+      "bandIndex": 54,
+      "wavelengthNm": 645.85,
+      "region": "Visible light",
+      "stretch": [
+        27.336250553131105,
+        68.57470710754393
+      ]
+    },
+    {
+      "file": "band-10.webp",
+      "bandIndex": 59,
+      "wavelengthNm": 670.87,
+      "region": "Visible light",
+      "stretch": [
+        23.9446146774292,
+        67.96647644042969
+      ]
+    },
+    {
+      "file": "band-11.webp",
+      "bandIndex": 64,
+      "wavelengthNm": 695.91,
+      "region": "Visible light",
+      "stretch": [
+        24.199165439605714,
+        62.001717185974094
+      ]
+    },
+    {
+      "file": "band-12.webp",
+      "bandIndex": 70,
+      "wavelengthNm": 725.96,
+      "region": "Near infrared",
+      "stretch": [
+        28.930597362518313,
+        53.78641128540039
+      ]
+    },
+    {
+      "file": "band-13.webp",
+      "bandIndex": 75,
+      "wavelengthNm": 751.0,
+      "region": "Near infrared",
+      "stretch": [
+        36.048583984375,
+        87.84591896057128
+      ]
+    },
+    {
+      "file": "band-14.webp",
+      "bandIndex": 81,
+      "wavelengthNm": 781.07,
+      "region": "Near infrared",
+      "stretch": [
+        33.417709579467775,
+        88.222900390625
+      ]
+    },
+    {
+      "file": "band-15.webp",
+      "bandIndex": 86,
+      "wavelengthNm": 806.13,
+      "region": "Near infrared",
+      "stretch": [
+        30.34929796218872,
+        80.84784667968745
+      ]
+    },
+    {
+      "file": "band-16.webp",
+      "bandIndex": 91,
+      "wavelengthNm": 831.19,
+      "region": "Near infrared",
+      "stretch": [
+        23.67750545501709,
+        67.11773040771479
+      ]
+    },
+    {
+      "file": "band-17.webp",
+      "bandIndex": 97,
+      "wavelengthNm": 861.26,
+      "region": "Near infrared",
+      "stretch": [
+        24.439266376495365,
+        74.49950592041016
+      ]
+    },
+    {
+      "file": "band-18.webp",
+      "bandIndex": 102,
+      "wavelengthNm": 886.33,
+      "region": "Near infrared",
+      "stretch": [
+        22.099733085632323,
+        70.44614723205564
+      ]
+    },
+    {
+      "file": "band-19.webp",
+      "bandIndex": 108,
+      "wavelengthNm": 916.41,
+      "region": "Near infrared",
+      "stretch": [
+        13.238125801086426,
+        44.168719253539955
+      ]
+    },
+    {
+      "file": "band-20.webp",
+      "bandIndex": 113,
+      "wavelengthNm": 941.48,
+      "region": "Near infrared",
+      "stretch": [
+        4.986511034965516,
+        16.8595972251892
+      ]
+    },
+    {
+      "file": "band-21.webp",
+      "bandIndex": 118,
+      "wavelengthNm": 966.55,
+      "region": "Near infrared",
+      "stretch": [
+        9.067121505737305,
+        31.58155632019043
+      ]
+    },
+    {
+      "file": "band-22.webp",
+      "bandIndex": 124,
+      "wavelengthNm": 996.63,
+      "region": "Near infrared",
+      "stretch": [
+        13.92701831817627,
+        50.523061676025364
+      ]
+    },
+    {
+      "file": "band-23.webp",
+      "bandIndex": 129,
+      "wavelengthNm": 1021.69,
+      "region": "Near infrared",
+      "stretch": [
+        13.320915222167969,
+        50.63636058807372
+      ]
+    },
+    {
+      "file": "band-24.webp",
+      "bandIndex": 135,
+      "wavelengthNm": 1051.77,
+      "region": "Near infrared",
+      "stretch": [
+        12.46291537284851,
+        49.574866027832
+      ]
+    },
+    {
+      "file": "band-25.webp",
+      "bandIndex": 140,
+      "wavelengthNm": 1076.84,
+      "region": "Near infrared",
+      "stretch": [
+        11.18560791015625,
+        45.80938720703125
+      ]
+    },
+    {
+      "file": "band-26.webp",
+      "bandIndex": 145,
+      "wavelengthNm": 1101.9,
+      "region": "Near infrared",
+      "stretch": [
+        7.743719511032105,
+        32.495608253479
+      ]
+    },
+    {
+      "file": "band-27.webp",
+      "bandIndex": 151,
+      "wavelengthNm": 1131.98,
+      "region": "Near infrared",
+      "stretch": [
+        1.7274007344245912,
+        6.262589030265799
+      ]
+    },
+    {
+      "file": "band-28.webp",
+      "bandIndex": 156,
+      "wavelengthNm": 1157.04,
+      "region": "Near infrared",
+      "stretch": [
+        3.3597934246063232,
+        13.433829307556152
+      ]
+    },
+    {
+      "file": "band-29.webp",
+      "bandIndex": 162,
+      "wavelengthNm": 1187.11,
+      "region": "Near infrared",
+      "stretch": [
+        5.610772080421448,
+        24.220741271972656
+      ]
+    },
+    {
+      "file": "band-30.webp",
+      "bandIndex": 167,
+      "wavelengthNm": 1212.16,
+      "region": "Near infrared",
+      "stretch": [
+        5.9393869352340705,
+        26.032699508666965
+      ]
+    },
+    {
+      "file": "band-31.webp",
+      "bandIndex": 172,
+      "wavelengthNm": 1237.22,
+      "region": "Near infrared",
+      "stretch": [
+        6.5788572311401365,
+        29.785452499389628
+      ]
+    },
+    {
+      "file": "band-32.webp",
+      "bandIndex": 178,
+      "wavelengthNm": 1267.28,
+      "region": "Near infrared",
+      "stretch": [
+        4.657870292663574,
+        21.17676237106323
+      ]
+    },
+    {
+      "file": "band-33.webp",
+      "bandIndex": 183,
+      "wavelengthNm": 1292.33,
+      "region": "Near infrared",
+      "stretch": [
+        5.125749611854554,
+        25.38106092453002
+      ]
+    },
+    {
+      "file": "band-34.webp",
+      "bandIndex": 188,
+      "wavelengthNm": 1317.37,
+      "region": "Near infrared",
+      "stretch": [
+        3.3565123748779304,
+        17.47141456604004
+      ]
+    },
+    {
+      "file": "band-35.webp",
+      "bandIndex": 194,
+      "wavelengthNm": 1347.42,
+      "region": "Near infrared",
+      "stretch": [
+        0.5479446429014206,
+        2.3453428745269775
+      ]
+    },
+    {
+      "file": "band-36.webp",
+      "bandIndex": 225,
+      "wavelengthNm": 1502.61,
+      "region": "Shortwave infrared",
+      "stretch": [
+        1.5259671700000763,
+        12.190434637069691
+      ]
+    },
+    {
+      "file": "band-37.webp",
+      "bandIndex": 231,
+      "wavelengthNm": 1532.63,
+      "region": "Shortwave infrared",
+      "stretch": [
+        2.1610772132873537,
+        17.216433315277097
+      ]
+    },
+    {
+      "file": "band-38.webp",
+      "bandIndex": 236,
+      "wavelengthNm": 1557.65,
+      "region": "Shortwave infrared",
+      "stretch": [
+        2.2467293739318848,
+        17.7087633514404
+      ]
+    },
+    {
+      "file": "band-39.webp",
+      "bandIndex": 241,
+      "wavelengthNm": 1582.66,
+      "region": "Shortwave infrared",
+      "stretch": [
+        2.087329394817352,
+        16.496870040893555
+      ]
+    },
+    {
+      "file": "band-40.webp",
+      "bandIndex": 247,
+      "wavelengthNm": 1612.66,
+      "region": "Shortwave infrared",
+      "stretch": [
+        1.935226174592972,
+        15.344303779602049
+      ]
+    },
+    {
+      "file": "band-41.webp",
+      "bandIndex": 252,
+      "wavelengthNm": 1637.66,
+      "region": "Shortwave infrared",
+      "stretch": [
+        1.9924718141555786,
+        15.895858821868883
+      ]
+    },
+    {
+      "file": "band-42.webp",
+      "bandIndex": 258,
+      "wavelengthNm": 1667.66,
+      "region": "Shortwave infrared",
+      "stretch": [
+        1.8144033420085908,
+        14.794568223953243
+      ]
+    },
+    {
+      "file": "band-43.webp",
+      "bandIndex": 263,
+      "wavelengthNm": 1692.65,
+      "region": "Shortwave infrared",
+      "stretch": [
+        1.6962527084350587,
+        14.175817489624023
+      ]
+    },
+    {
+      "file": "band-44.webp",
+      "bandIndex": 268,
+      "wavelengthNm": 1717.64,
+      "region": "Shortwave infrared",
+      "stretch": [
+        1.5064257383346558,
+        13.082634925842285
+      ]
+    },
+    {
+      "file": "band-45.webp",
+      "bandIndex": 274,
+      "wavelengthNm": 1747.62,
+      "region": "Shortwave infrared",
+      "stretch": [
+        1.1252022886276247,
+        10.264540119171137
+      ]
+    },
+    {
+      "file": "band-46.webp",
+      "bandIndex": 279,
+      "wavelengthNm": 1772.59,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.8206949478387833,
+        7.788374214172358
+      ]
+    },
+    {
+      "file": "band-47.webp",
+      "bandIndex": 329,
+      "wavelengthNm": 2022.04,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.12464013136923313,
+        1.8958576118946069
+      ]
+    },
+    {
+      "file": "band-48.webp",
+      "bandIndex": 334,
+      "wavelengthNm": 2046.95,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.31320395410060886,
+        4.849840731620786
+      ]
+    },
+    {
+      "file": "band-49.webp",
+      "bandIndex": 339,
+      "wavelengthNm": 2071.85,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.2313214835524559,
+        3.5359277725219727
+      ]
+    },
+    {
+      "file": "band-50.webp",
+      "bandIndex": 345,
+      "wavelengthNm": 2101.72,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.37957704126834874,
+        5.870697417259207
+      ]
+    },
+    {
+      "file": "band-51.webp",
+      "bandIndex": 350,
+      "wavelengthNm": 2126.6,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.38411110639572144,
+        5.983861660957329
+      ]
+    },
+    {
+      "file": "band-52.webp",
+      "bandIndex": 356,
+      "wavelengthNm": 2156.46,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.3645210033655167,
+        5.639235496520996
+      ]
+    },
+    {
+      "file": "band-53.webp",
+      "bandIndex": 361,
+      "wavelengthNm": 2181.33,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.3418712216615677,
+        5.223614268302914
+      ]
+    },
+    {
+      "file": "band-54.webp",
+      "bandIndex": 366,
+      "wavelengthNm": 2206.19,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.31562238931655884,
+        4.731722831726074
+      ]
+    },
+    {
+      "file": "band-55.webp",
+      "bandIndex": 372,
+      "wavelengthNm": 2236.01,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.3053586184978485,
+        4.732524633407588
+      ]
+    },
+    {
+      "file": "band-56.webp",
+      "bandIndex": 377,
+      "wavelengthNm": 2260.86,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.2565392220020295,
+        4.115273885726923
+      ]
+    },
+    {
+      "file": "band-57.webp",
+      "bandIndex": 383,
+      "wavelengthNm": 2290.66,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.22191683948040009,
+        3.6426431250572158
+      ]
+    },
+    {
+      "file": "band-58.webp",
+      "bandIndex": 388,
+      "wavelengthNm": 2315.49,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.1939463095366955,
+        3.259657382965088
+      ]
+    },
+    {
+      "file": "band-59.webp",
+      "bandIndex": 393,
+      "wavelengthNm": 2340.31,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.1485411463677883,
+        2.452647294998168
+      ]
+    },
+    {
+      "file": "band-60.webp",
+      "bandIndex": 399,
+      "wavelengthNm": 2370.08,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.1019924818724394,
+        1.7163714170455933
+      ]
+    },
+    {
+      "file": "band-61.webp",
+      "bandIndex": 404,
+      "wavelengthNm": 2394.89,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.10599450767040253,
+        1.98183274269104
+      ]
+    },
+    {
+      "file": "band-62.webp",
+      "bandIndex": 410,
+      "wavelengthNm": 2424.64,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.07979194030165672,
+        1.547155323028564
+      ]
+    },
+    {
+      "file": "band-63.webp",
+      "bandIndex": 415,
+      "wavelengthNm": 2449.43,
+      "region": "Shortwave infrared",
+      "stretch": [
+        0.02134899813681841,
+        0.40914429783821116
+      ]
+    }
+  ]
+}

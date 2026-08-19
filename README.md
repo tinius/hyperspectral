@@ -42,3 +42,19 @@ each push to `main`.
 
 The MapTiler key is injected into the client build. Restrict the key to the
 GitHub Pages domain in the MapTiler dashboard.
+
+## Regenerating the wavelength scrubber
+
+The scrubber uses 64 grayscale frames sampled across the Tanager radiance
+cube. Generate them from the original HDF5 product with:
+
+```bash
+python scripts/prepare_band_scrubber.py /path/to/ortho_radiance.h5 \
+  --output-dir public/data/bands --frames 64 --width 640
+```
+
+Each frame is independently stretched from its 1st to 99th radiance percentile
+to preserve spatial detail across wavelengths. The images are therefore for
+visual comparison of patterns, not absolute brightness. Low-signal atmospheric
+water-absorption windows around 1,400 and 1,900 nm are excluded because sensor
+noise and calibration artifacts dominate there.

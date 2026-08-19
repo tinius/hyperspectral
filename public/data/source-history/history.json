@@ -1,0 +1,119 @@
+{
+  "center": [
+    54.028140755665234,
+    38.330618313823045
+  ],
+  "widthKm": 3.710144927536233,
+  "heightKm": 2.7826086956521743,
+  "basemap": "satellite.webp",
+  "plumes": [
+    {
+      "id": "tan20250204t074434c00s4001-N",
+      "date": "2025-02-04",
+      "emission": 2660,
+      "uncertainty": 175,
+      "windSpeed": 2.2,
+      "windDirectionTo": 249.0,
+      "image": "tan20250204t074434c00s4001-N.png"
+    },
+    {
+      "id": "tan20250304t074339c00s4001-I",
+      "date": "2025-03-04",
+      "emission": 4350,
+      "uncertainty": 639,
+      "windSpeed": 2.7,
+      "windDirectionTo": 197.7,
+      "image": "tan20250304t074339c00s4001-I.png"
+    },
+    {
+      "id": "tan20250420t073609c00s4001-H",
+      "date": "2025-04-20",
+      "emission": 2525,
+      "uncertainty": 282,
+      "windSpeed": 2.4,
+      "windDirectionTo": 257.4,
+      "image": "tan20250420t073609c00s4001-H.png"
+    },
+    {
+      "id": "tan20250518t074002c00s4001-D",
+      "date": "2025-05-18",
+      "emission": 15277,
+      "uncertainty": 916,
+      "windSpeed": 3.2,
+      "windDirectionTo": 252.0,
+      "image": "tan20250518t074002c00s4001-D.png"
+    },
+    {
+      "id": "tan20250622t074441c08s4001-M",
+      "date": "2025-06-22",
+      "emission": 13745,
+      "uncertainty": 584,
+      "windSpeed": 7.2,
+      "windDirectionTo": 97.7,
+      "image": "tan20250622t074441c08s4001-M.png"
+    },
+    {
+      "id": "tan20250722t080219c07s4001-F",
+      "date": "2025-07-22",
+      "emission": 17810,
+      "uncertainty": 1542,
+      "windSpeed": 4.6,
+      "windDirectionTo": 282.7,
+      "image": "tan20250722t080219c07s4001-F.png"
+    },
+    {
+      "id": "tan20251019t080137c95s4001-G",
+      "date": "2025-10-19",
+      "emission": 4681,
+      "uncertainty": 529,
+      "windSpeed": 2.6,
+      "windDirectionTo": 260.7,
+      "image": "tan20251019t080137c95s4001-G.png"
+    },
+    {
+      "id": "tan20251118t081849c13s4001-A",
+      "date": "2025-11-18",
+      "emission": 11736,
+      "uncertainty": 2170,
+      "windSpeed": 1.9,
+      "windDirectionTo": 154.3,
+      "image": "tan20251118t081849c13s4001-A.png"
+    },
+    {
+      "id": "tan20251221t081027c67s4001-A",
+      "date": "2025-12-21",
+      "emission": 17967,
+      "uncertainty": 1452,
+      "windSpeed": 4.5,
+      "windDirectionTo": 214.3,
+      "image": "tan20251221t081027c67s4001-A.png"
+    },
+    {
+      "id": "tan20260222t082947c94s4001-F",
+      "date": "2026-02-22",
+      "emission": 8932,
+      "uncertainty": 3043,
+      "windSpeed": 2.4,
+      "windDirectionTo": 161.6,
+      "image": "tan20260222t082947c94s4001-F.png"
+    },
+    {
+      "id": "tan20260315t083602c83s4001-G",
+      "date": "2026-03-15",
+      "emission": 15769,
+      "uncertainty": 1088,
+      "windSpeed": 5.9,
+      "windDirectionTo": 244.7,
+      "image": "tan20260315t083602c83s4001-G.png"
+    },
+    {
+      "id": "tan20260519t083810c80s4001-Q",
+      "date": "2026-05-19",
+      "emission": 14714,
+      "uncertainty": 7062,
+      "windSpeed": 3.8,
+      "windDirectionTo": 81.6,
+      "image": "tan20260519t083810c80s4001-Q.png"
+    }
+  ]
+}
