@@ -19,6 +19,8 @@ const MAX_HOURS = 24 * 7;
 const AUTOPLAY_DELAY_MS = 1500;
 const INITIAL_VIEW_LATITUDE = 30;
 
+const FOOTPRINT_HEIGHT_FACTOR = 1.01
+
 function earthPosition(longitude: number, latitude: number, radius: number) {
   const cosLatitude = Math.cos(latitude);
   return new THREE.Vector3(
@@ -118,7 +120,7 @@ function footprintPositions(coordinates: number[][]) {
       const position = earthPosition(
         THREE.MathUtils.degToRad(point[0]),
         THREE.MathUtils.degToRad(point[1]),
-        1.034,
+        FOOTPRINT_HEIGHT_FACTOR,
       );
       positions.push(position.x, position.y, position.z);
     }
@@ -133,7 +135,7 @@ function footprintOutlinePositions(coordinates: number[][]) {
       const position = earthPosition(
         THREE.MathUtils.degToRad(point[0]),
         THREE.MathUtils.degToRad(point[1]),
-        1.037,
+        FOOTPRINT_HEIGHT_FACTOR,
       );
       positions.push(position.x, position.y, position.z);
     }
@@ -264,7 +266,7 @@ export default function OrbitGlobe() {
     const trackPoints: THREE.Vector3[] = [];
     for (let minute = 0; minute <= MAX_HOURS * 60; minute += 1) {
       const position = positionAt(satrec, new Date(ANIMATION_START.getTime() + minute * 60_000));
-      if (position) trackPoints.push(position.ground.clone().normalize().multiplyScalar(1.03));
+      if (position) trackPoints.push(position.satellite.clone());
     }
     const trackGeometry = new LineGeometry();
     trackGeometry.setPositions(trackPoints.flatMap((point) => [point.x, point.y, point.z]));
@@ -283,10 +285,6 @@ export default function OrbitGlobe() {
       new THREE.SphereGeometry(0.035, 20, 14),
       new THREE.MeshBasicMaterial({ color: 0xffffff }),
     );
-    const subpoint = new THREE.Mesh(
-      new THREE.SphereGeometry(0.018, 16, 12),
-      new THREE.MeshBasicMaterial({ color: 0x71efc4 }),
-    );
     const tetherGeometry = new THREE.BufferGeometry().setFromPoints([
       new THREE.Vector3(), new THREE.Vector3(),
     ]);
@@ -294,7 +292,7 @@ export default function OrbitGlobe() {
       tetherGeometry,
       new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.65 }),
     );
-    globe.add(satellite, subpoint, tether);
+    globe.add(satellite, tether);
 
     scene.add(new THREE.HemisphereLight(0xeaf5ff, 0x071521, 2.5));
     const sun = new THREE.DirectionalLight(0xffffff, 2.2);
@@ -417,7 +415,6 @@ export default function OrbitGlobe() {
         footprintsGeometry.setDrawRange(0, visibleVertices);
         footprintOutlinesGeometry.instanceCount = visibleEdges;
         satellite.position.copy(position.satellite);
-        subpoint.position.copy(target);
         const tetherPositions = tetherGeometry.attributes.position;
         tetherPositions.setXYZ(0, target.x, target.y, target.z);
         tetherPositions.setXYZ(1, position.satellite.x, position.satellite.y, position.satellite.z);
