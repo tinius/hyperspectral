@@ -17,6 +17,7 @@ const EARTH_RADIUS_KM = 6371;
 const MEAN_MOTION_PER_DAY = 15.43947597;
 const MAX_HOURS = 24 * 7;
 const TRACK_SAMPLE_SECONDS = 15;
+const AUTO_ROTATION_RADIANS_PER_SECOND = 0.035;
 // Delay between the globe entering the viewport and the animation starting.
 const AUTOPLAY_DELAY_MS = 1500;
 const INITIAL_VIEW_LATITUDE = 30;
@@ -488,7 +489,7 @@ export default function OrbitGlobe() {
         globe.quaternion.multiply(
           new THREE.Quaternion().setFromAxisAngle(
             new THREE.Vector3(0, 1, 0),
-            deltaSeconds * 0.025,
+            deltaSeconds * AUTO_ROTATION_RADIANS_PER_SECOND,
           ),
         );
       }
