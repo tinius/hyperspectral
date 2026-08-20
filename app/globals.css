@@ -91,6 +91,10 @@ body {
   width: 80vw;
   max-width: 1360px;
 }
+.spectrum-explainer, .method-bridge, .map-stage {
+  width: 74vw;
+  max-width: 1180px;
+}
 .spectrum-explainer {
   margin: 76px auto 0;
   padding-top: 24px;

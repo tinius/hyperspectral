@@ -544,7 +544,7 @@ export default function Home() {
     return (
       <main className="loading-view">
         <span className="loading-mark" />
-        <p>Preparing the methane scene…</p>
+        <p>Loading satellite data ...</p>
       </main>
     );
   }
