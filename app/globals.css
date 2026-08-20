@@ -798,7 +798,7 @@ body {
   .orbit-section-heading { gap: 18px; margin-bottom: 30px; }
   .orbit-section h2 { font-size: 37px; }
   .orbit-element { min-height: 520px; }
-  .orbit-canvas { inset: 0 0 72px; }
+  .orbit-canvas { inset: 28px 0 45px; }
   .orbit-readout { left: 14px; top: 14px; gap: 14px; }
   .orbit-readout b { font-size: 18px; }
   .orbit-key { top: 16px; right: 14px; flex-direction: column; gap: 7px; }
