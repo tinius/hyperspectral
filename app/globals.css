@@ -799,6 +799,7 @@ body {
   .orbit-section h2 { font-size: 37px; }
   .orbit-element { min-height: 520px; }
   .orbit-canvas { inset: 28px 0 45px; }
+  .orbit-canvas canvas { touch-action: pan-y; }
   .orbit-readout { left: 14px; top: 14px; gap: 14px; }
   .orbit-readout b { font-size: 18px; }
   .orbit-key { top: 16px; right: 14px; flex-direction: column; gap: 7px; }
@@ -849,4 +850,14 @@ body {
 
 @media (max-width: 480px) {
   .history-card { flex-basis: 100%; }
+}
+
+
+.time-span {
+  min-width: 72px;
+}
+@media (max-width: 480px) {
+  .time-span {
+    min-width: 62px;
+  }
 }

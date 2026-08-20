@@ -204,8 +204,6 @@ export default function OrbitGlobe() {
     const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
     camera.position.set(2.65, 1.45, 2.65);
     camera.lookAt(0, 0, 0);
-    const screenUp = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion).normalize();
-    const screenRight = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion).normalize();
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -386,6 +384,14 @@ export default function OrbitGlobe() {
     let previousPointer = { x: 0, y: 0 };
     let resettingRotation = false;
     const canvas = renderer.domElement;
+    const rotateGlobe = (deltaX: number) => {
+      globe.quaternion.multiply(
+        new THREE.Quaternion().setFromAxisAngle(
+          new THREE.Vector3(0, 1, 0),
+          deltaX * 0.006,
+        ),
+      );
+    };
     const pointerDown = (event: PointerEvent) => {
       dragging = true;
       activePointer = event.pointerId;
@@ -396,13 +402,7 @@ export default function OrbitGlobe() {
     const pointerMove = (event: PointerEvent) => {
       if (!dragging || event.pointerId !== activePointer || resettingRotation) return;
       const deltaX = event.clientX - previousPointer.x;
-      const deltaY = event.clientY - previousPointer.y;
-      globe.quaternion.premultiply(
-        new THREE.Quaternion().setFromAxisAngle(screenUp, deltaX * 0.006),
-      );
-      globe.quaternion.premultiply(
-        new THREE.Quaternion().setFromAxisAngle(screenRight, deltaY * 0.006),
-      );
+      rotateGlobe(deltaX);
       previousPointer = { x: event.clientX, y: event.clientY };
     };
     const pointerUp = (event: PointerEvent) => {
@@ -532,7 +532,7 @@ export default function OrbitGlobe() {
     <div className="orbit-element">
       <div className="orbit-canvas" ref={mountRef} aria-label="Animated 3D orbit of Tanager-1 around Earth" />
       <div className="orbit-readout" aria-live="polite">
-        <span><b>{days}d {hours}h</b> elapsed</span>
+        <span className='time-span'><b>{days}d {hours}h</b> elapsed</span>
         <span><b>{orbitCount.toFixed(1)}</b> orbits</span>
       </div>
       <div className="orbit-key" aria-label="Orbit animation legend">
