@@ -7,6 +7,7 @@ import { LineSegments2 } from "three/addons/lines/LineSegments2.js";
 import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js";
 import { eciToGeodetic, gstime, propagate, twoline2satrec } from "satellite.js";
 import landOutlines from "./land-outlines.json";
+import countryBorders from "./country-borders.json";
 import footprintWeek from "./tanager-footprints-week.json";
 
 const TLE_LINE_1 = "1 60507U 24149AR  26201.98216352  .00000223  00000+0  67777-5 0  9990";
@@ -15,6 +16,7 @@ const ANIMATION_START = new Date(footprintWeek.start);
 const EARTH_RADIUS_KM = 6371;
 const MEAN_MOTION_PER_DAY = 15.43947597;
 const MAX_HOURS = 24 * 7;
+const TRACK_SAMPLE_SECONDS = 15;
 // Delay between the globe entering the viewport and the animation starting.
 const AUTOPLAY_DELAY_MS = 1500;
 const INITIAL_VIEW_LATITUDE = 30;
@@ -45,7 +47,7 @@ function positionAt(satrec: ReturnType<typeof twoline2satrec>, date: Date) {
 }
 
 function graticuleMaterial() {
-  return new THREE.LineBasicMaterial({ color: 0xb6c8c1, transparent: true, opacity: 0.18 });
+  return new THREE.LineBasicMaterial({ color: 0xb6c8c1, transparent: true, opacity: 0.15 });
 }
 
 function createEarthTexture() {
@@ -56,10 +58,10 @@ function createEarthTexture() {
   if (!context) return null;
   context.fillStyle = "#123f5c";
   context.fillRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = "rgba(255, 255, 255, .27)";
+  context.fillStyle = "rgba(255, 255, 255, .15)";
+  context.beginPath();
   for (const ring of landOutlines as number[][][]) {
     if (ring.length < 3) continue;
-    context.beginPath();
     for (let index = 0; index < ring.length; index += 1) {
       const point = ring[index];
       const x = ((point[0] + 180) / 360) * canvas.width;
@@ -68,12 +70,52 @@ function createEarthTexture() {
       else context.lineTo(x, y);
     }
     context.closePath();
-    context.fill();
   }
+  // Treat nested rings as holes so inland seas are not painted as land.
+  context.fill("evenodd");
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 4;
   return texture;
+}
+
+function addCountryBorders(group: THREE.Group) {
+  const positions: number[] = [];
+  for (const line of countryBorders as number[][][]) {
+    for (let index = 1; index < line.length; index += 1) {
+      const start = line[index - 1];
+      const end = line[index];
+      let longitudeDelta = end[0] - start[0];
+      if (longitudeDelta > 180) longitudeDelta -= 360;
+      if (longitudeDelta < -180) longitudeDelta += 360;
+      const latitudeDelta = end[1] - start[1];
+      const steps = Math.max(1, Math.ceil(Math.max(
+        Math.abs(longitudeDelta),
+        Math.abs(latitudeDelta),
+      ) / 0.2));
+      for (let step = 0; step < steps; step += 1) {
+        for (const fraction of [step / steps, (step + 1) / steps]) {
+          const position = earthPosition(
+            THREE.MathUtils.degToRad(start[0] + longitudeDelta * fraction),
+            THREE.MathUtils.degToRad(start[1] + latitudeDelta * fraction),
+            1.004,
+          );
+          positions.push(position.x, position.y, position.z);
+        }
+      }
+    }
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  group.add(new THREE.LineSegments(
+    geometry,
+    new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.3,
+      depthWrite: false,
+    }),
+  ));
 }
 
 function addGraticules(group: THREE.Group) {
@@ -220,6 +262,7 @@ export default function OrbitGlobe() {
       }),
     ));
     addGraticules(globe);
+    addCountryBorders(globe);
 
     const footprintMaterial = new THREE.MeshBasicMaterial({
       color: 0xedce5c,
@@ -230,7 +273,7 @@ export default function OrbitGlobe() {
     });
     const footprintOutlineMaterial = new LineMaterial({
       color: 0xedce5c,
-      linewidth: 4.5,
+      linewidth: 2,
       transparent: true,
       opacity: 0.95,
       depthWrite: false,
@@ -264,8 +307,12 @@ export default function OrbitGlobe() {
     globe.add(footprints, footprintOutlines);
 
     const trackPoints: THREE.Vector3[] = [];
-    for (let minute = 0; minute <= MAX_HOURS * 60; minute += 1) {
-      const position = positionAt(satrec, new Date(ANIMATION_START.getTime() + minute * 60_000));
+    const trackSampleCount = MAX_HOURS * 3_600 / TRACK_SAMPLE_SECONDS;
+    for (let sample = 0; sample <= trackSampleCount; sample += 1) {
+      const position = positionAt(
+        satrec,
+        new Date(ANIMATION_START.getTime() + sample * TRACK_SAMPLE_SECONDS * 1_000),
+      );
       if (position) trackPoints.push(position.satellite.clone());
     }
     const trackGeometry = new LineGeometry();
@@ -282,8 +329,8 @@ export default function OrbitGlobe() {
     globe.add(track);
 
     const satellite = new THREE.Mesh(
-      new THREE.SphereGeometry(0.035, 20, 14),
-      new THREE.MeshBasicMaterial({ color: 0xffffff }),
+      new THREE.SphereGeometry(0.025, 20, 14),
+      new THREE.MeshBasicMaterial({ color: 0x71efc4 }),
     );
     const tetherGeometry = new THREE.BufferGeometry().setFromPoints([
       new THREE.Vector3(), new THREE.Vector3(),
@@ -422,7 +469,10 @@ export default function OrbitGlobe() {
       }
       const revealedTrackPoints = Math.min(
         trackPoints.length,
-        Math.max(1, Math.floor(progressRef.current * 60) + 1),
+        Math.max(
+          1,
+          Math.floor(progressRef.current * 3_600 / TRACK_SAMPLE_SECONDS) + 1,
+        ),
       );
       trackGeometry.instanceCount = Math.max(0, revealedTrackPoints - 1);
       if (resettingRotation) {
@@ -485,8 +535,8 @@ export default function OrbitGlobe() {
         <span><b>{orbitCount.toFixed(1)}</b> orbits</span>
       </div>
       <div className="orbit-key" aria-label="Orbit animation legend">
-        <span><i className="orbit-key-track" />Orbit path</span>
-        <span><i className="orbit-key-scene" />Captured scene</span>
+        <span><i className="orbit-key-track" />Satellite orbit</span>
+        <span><i className="orbit-key-scene" />Carbon Mapper observations</span>
       </div>
       <div className="orbit-controls">
         <button

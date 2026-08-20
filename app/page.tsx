@@ -598,32 +598,9 @@ export default function Home() {
             <span style={{ left: "97.6%", transform: 'translate(-50%, 7px)', color : '#5a3021', fontWeight: 'bold' }}>2,450</span>
           </div>
           <p className="spectrum-note">
-            The map below focuses on the 2,100–2,450 nm region where methane
-            leaves a strong, structured absorption fingerprint.
+            Methane absorbs light particularly strongly in the region between 2,100 and 2,450 nm.
           </p>
         </div>
-      </section>
-
-      <section className="orbit-section">
-        <div className="orbit-section-heading">
-          <h2>Following Tanager-1 around Earth</h2>
-          <p>
-            Tanager-1 travels at roughly 7.6 km per second, completing an orbit
-            about every 93 minutes. Scrub through a week to watch its ground
-            track accumulate behind it. Bright strips mark 245 real scenes made
-            available through Carbon Mapper&apos;s public methane catalogue during
-            the same week.
-          </p>
-        </div>
-        <OrbitGlobe />
-        <p className="orbit-method-note">
-          The line is a modelled orbital ground track propagated from a public
-          TLE for NORAD 60507. Highlighted polygons are actual Tanager full-scene
-          footprints from Carbon Mapper&apos;s public L2B methane collection for
-          12–19 July 2026; they are not a complete record of every Tanager capture.
-          Their outlines use a minimum display width so the real 18 km swaths
-          remain visible at globe scale. Land geometry uses Natural Earth 1:50m data.
-        </p>
       </section>
 
       <section className="method-bridge">
@@ -631,8 +608,8 @@ export default function Home() {
           <h2>Matching methane’s spectral signature</h2>
           <div>
             <p>
-            Planet, Carbon Mapper and other groups use sophisticated algorithms to estimate methane concentrations and emission rates
-            from hyperspectral imagery. This demo takes a simpler approach to illustrate the underlying idea.
+            Planet and Carbon Mapper use sophisticated algorithms to estimate methane concentrations and emission rates
+            from hyperspectral imagery. This demo illustrates the underlying idea with a simplified approach.
             </p>
             <p>
               After subtracting background noise,
@@ -774,8 +751,6 @@ export default function Home() {
         {reading && <SpectralTooltip reading={reading} metadata={metadata} />}
       </section>
 
-      <SourceHistory />
-
       <footer className="footnote">
         <p>
           The score measures resemblance to methane after removing the expected
@@ -791,6 +766,22 @@ export default function Home() {
           </a>. The interactive tooltip in the map shows spectral information averaged over 5x5 pixels.
         </p>
       </footer>
+
+      <section className="orbit-section">
+        <div className="orbit-section-heading">
+          <h2>A week in the life</h2>
+          <p>
+           Tanager-1 is hurtling through space at around 17,000 miles per hour, completing one orbit around Earth every 93 minutes.
+</p><p>
+Over the course of a week, it observes hundreds of potential methane sources, from oil and gas facilities to landfills. By returning to the same sites over weeks and months, it can track how their emissions change over time.
+
+          </p>
+        </div>
+        <OrbitGlobe />
+        <p className="orbit-method-note">
+          The tracks shown are based on the real <a href="https://keeptrack.space/satellite/60507" target="_blank">orbital parameters</a> of Tanager-1 and correspond to the week from July 12 to July 19, 2026. The yellow polygons show real scene footprints from Carbon Mapper’s methane collection for the same time period. The outlines of these polygons are slightly exaggerated for visibility.
+        </p>
+      </section>
     </main>
   );
 }
