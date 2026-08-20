@@ -269,7 +269,12 @@ export default function OrbitGlobe() {
     const trackGeometry = new LineGeometry();
     trackGeometry.setPositions(trackPoints.flatMap((point) => [point.x, point.y, point.z]));
     trackGeometry.instanceCount = 0;
-    const trackMaterial = new LineMaterial({ color: 0x71efc4, linewidth: 1 });
+    const trackMaterial = new LineMaterial({
+      color: 0x71efc4,
+      linewidth: 1,
+      transparent: true,
+      opacity: 0.55,
+    });
     const track = new Line2(trackGeometry, trackMaterial);
     track.computeLineDistances();
     globe.add(track);

@@ -377,7 +377,7 @@ body {
 }
 .orbit-key span { display: flex; align-items: center; gap: 7px; }
 .orbit-key i { display: block; width: 21px; border-radius: 4px; }
-.orbit-key-track { height: 2px; background: #71efc4; }
+.orbit-key-track { height: 2px; background: rgba(113, 239, 196, .55); }
 .orbit-key-scene { height: 5px; background: #edce5c; }
 .orbit-controls {
   position: absolute;

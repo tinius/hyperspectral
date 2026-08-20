@@ -610,7 +610,7 @@ export default function Home() {
           <p>
             Tanager-1 travels at roughly 7.6 km per second, completing an orbit
             about every 93 minutes. Scrub through a week to watch its ground
-            track accumulate behind it. Bright strips mark 250 real scenes made
+            track accumulate behind it. Bright strips mark 245 real scenes made
             available through Carbon Mapper&apos;s public methane catalogue during
             the same week.
           </p>
